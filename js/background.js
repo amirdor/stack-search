@@ -30,12 +30,10 @@ function modifyLinks(rootNode) {
         var node = nodes.shift();
         if (node.tagName == "A") {
             /* Modify the '<a>' element */
-            if (node.href.includes("stackoverflow.com") && node.innerText.length > 1){
-                console.log(node.href)
-                href = node.href.replace('http://','https://');
+            if (node.href.includes("stackoverflow.com/questions") && node.innerText.length > 1){
+                href = node.href.replace('http://stackoverflow','https://stackoverflow');
                 calculate_counters(node, href);
             }
-            // node.innerHTML = "~~" + node.innerHTML + "~~";
         } else {
             /* If the current node has children, queue them for further
              * processing, ignoring any '<script>' tags. */
@@ -50,7 +48,6 @@ function modifyLinks(rootNode) {
 
 /* Observer1: Looks for 'div.search' */
 var observer1 = new MutationObserver(function(mutations) {
-  console.log("heres")
     /* For each MutationRecord in 'mutations'... */
     mutations.some(function(mutation) {
         /* ...if nodes have beed added... */
@@ -101,7 +98,10 @@ function inject_text(elem, htmlElem){
                max_score = score_i;
             }
           }
-          var para =  document.createElement("span");
+          var div_top = document.createElement("div");
+          div_top.className = "s";
+
+          var para = document.createElement("span");
           para.className += " st";
           para.style.color = STACK_COLOR
           para.innerHTML = answers +" answers";
@@ -112,7 +112,8 @@ function inject_text(elem, htmlElem){
               para.innerHTML += " - <b>Accpeted Answer Available</b>";
           }
 
+          div_top.append(para);
           div = elem.parentElement.parentElement;
-          div.append(para);
+          div.append(div_top);
       
 }

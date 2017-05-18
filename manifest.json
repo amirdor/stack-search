@@ -1,25 +1,30 @@
 {
   "name": "Stack Search",
-  "description": "Insert to google search results: # of answer, and the rank of the top answer of StackOverFlow",
-  "version": "0.1",
+  "description": "Enrich google search results. Adding: # of answer, and the rank of the top answer of StackOverFlow",
+  "version": "1.1.1",
+  "short_name": "Stack Search",
   "minimum_chrome_version": "16.0.884",
  "background": {
 		"run_at": "document_end",
 		"page": "html/background.html",
         "js":["js/background.js"],
-        "persistent": true
+        "persistent": false
     },    
   "content_scripts": [ {
     "run_at" : "document_end",
     "js": [ "js/jquery.js", "js/background.js"],
 	"css" :[ ],
-  "matches": ["https://www.google.com/*", "https://www.google.co.il/*"]
+ "matches": [ "*://*/*" ],
+        "include_globs": [
+            "*://*.google.*/*"
+                    ]
   }],
     "browser_action": {
       "default_title": "Stack Search",
       "default_icon": "icon.png",
       "default_popup": "html/popups.html"
   },
+   "author": "dor amir",
   "permissions": ["tabs","<all_urls>"],
   "manifest_version": 2,
   "icons": {
