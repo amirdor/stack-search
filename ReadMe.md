@@ -15,9 +15,6 @@ Then, click on **"ADD TO CHROME"**
 ### Getting started
 Search on Google, if the results will include any questions on stackoverflow you will get the enricment that **Stack Search** will give. 
 
-#Results
-![results](http://imgur.com/msjaHtb)
-
 License
 ----
 
