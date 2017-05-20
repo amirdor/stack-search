@@ -1,3 +1,20 @@
+// Standard Google Universal Analytics code
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); // Note: https protocol here
+
+ga('create', 'UA-55950495-3', 'auto');
+
+ga('set', 'checkProtocolTask', function(){}); // Removes failing protocol check. @see: http://stackoverflow.com/a/22152353/1958200
+
+ga('require', 'displayfeatures');
+
+
 STACK_COLOR = ' #ff966b'
 
 /* MutationObserver configuration data: Listen for "childList"
@@ -7,6 +24,7 @@ var config = {
     subtree: true
 };
 var regex = /<a.*?>[^<]*<\/a>/;
+
 
 
 function calculate_counters(elem, href){
@@ -25,6 +43,7 @@ function calculate_counters(elem, href){
 }
 /* Traverse 'rootNode' and its descendants and modify '<a>' tags */
 function modifyLinks(rootNode) {
+    ga('send', 'event', 'google_search', 'query',  $("#lst-ib").value);
     var nodes = [rootNode];
     while (nodes.length > 0) {
         var node = nodes.shift();
@@ -117,5 +136,9 @@ function inject_text(elem, htmlElem){
           div = elem.parentElement.parentElement;
           div_top.dir = 'auto'
           div.append(div_top);
+          ga('send', 'event', 'inject_text', 'value',1);
+
       
 }
+
+

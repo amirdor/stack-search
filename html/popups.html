@@ -6,6 +6,29 @@
                 <link rel="stylesheet" type="text/css" href="../css/custom.css">
 		<script src="../js/jquery.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
+        <script type="text/javascript">
+            // Standard Google Universal Analytics code
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); // Note: https protocol here
+
+ga('create', 'UA-55950495-3', 'auto');
+
+ga('set', 'checkProtocolTask', function(){}); // Removes failing protocol check. @see: http://stackoverflow.com/a/22152353/1958200
+
+ga('require', 'displayfeatures');
+
+ga('send', 'pageview', '/popups.html');
+$('.btn_an').click(function () {
+  ga('send', 'event', 'button', 'click', $(this).id);
+  // remaining logic for button click
+});
+        </script>
     </head>
     <body>
     <div class="container" >
@@ -21,14 +44,14 @@
     </div>
     <div class="row">
     <div class="col-lg-12 text-center">
-     <a href='https://www.paypal.me/doramir/10' class="btn btn-default" target="_blank">Donate</a>
+     <a id="donate" href='https://www.paypal.me/doramir/10' class="btn btn-default btn_an" target="_blank">Donate</a>
 
     </div>
     </div>
     <div style="padding-top:25px"></div>
     <div class="row">
     <div class="col-lg-12 text-center">
-    <p>Found a bug? <a href="mailto:amirdor+stacksearh@gmail.com">Report it!</a></p>
+    <p>Found a bug? <a id="bug" class="btn_an" href="mailto:amirdor+stacksearh@gmail.com">Report it!</a></p>
     </div>
     </div>
     </div>
