@@ -103,6 +103,7 @@ var observer2 = new MutationObserver(function(mutations) {
     });
 });
 
+flag = true
 /* Start observing 'body' for 'div#search' */
 observer1.observe(document.body, config);
 
@@ -130,6 +131,22 @@ function inject_text(elem, htmlElem){
           }
           if (accpeted_answer > 0){
               para.innerHTML += " - <b>Accpeted Answer Available</b>";
+              if (flag){
+                flag = false
+          
+                                       var tmp1 = document.createElement("div");
+var title = document.createElement("div");
+                            title.className ="kno-ecr-pt kno-fb-ctx"
+                            title.innerHTML = 'First Accpeted Answer:'
+                            title.style.color = STACK_COLOR
+                        tmp1.className += " xpdopen";
+
+                        accpeted_answer_tmp = htmlElem.find('div.accepted-answer .answercell .post-text')[0]    
+                        tmp1.append(accpeted_answer_tmp)
+                                                $('#rhs').append(title)   
+
+                        $('#rhs').append(tmp1)   
+              }
           }
 
           div_top.append(para);
