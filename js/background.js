@@ -103,6 +103,7 @@ function inject_text(elem, htmlElem){
 
           var para = document.createElement("span");
           para.className += " st";
+          para.dir = 'auto'
           para.style.color = STACK_COLOR
           para.innerHTML = answers +" answers";
           if (answers > 0){
@@ -114,6 +115,7 @@ function inject_text(elem, htmlElem){
 
           div_top.append(para);
           div = elem.parentElement.parentElement;
+          div_top.dir = 'auto'
           div.append(div_top);
       
 }
