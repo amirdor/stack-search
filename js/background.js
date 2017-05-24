@@ -1,22 +1,17 @@
-// Standard Google Universal Analytics code
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = 'https://ssl.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
 
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-55950495-3']);
+_gaq.push(['_trackPageview']);
 
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-
-})(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); // Note: https protocol here
-
-ga('create', 'UA-55950495-3', 'auto');
-
-ga('set', 'checkProtocolTask', function(){}); // Removes failing protocol check. @see: http://stackoverflow.com/a/22152353/1958200
-
-ga('require', 'displayfeatures');
-
-
-STACK_COLOR = ' #ff966b'
-
+flag = true;
+STACK_COLOR = ' #ff966b';
+POSSIBLE_ANSWER = 'Possible Answer'
+VIEW_SOURCE = 'View Source';
 /* MutationObserver configuration data: Listen for "childList"
  * mutations in the specified element and its descendants */
 var config = {
@@ -43,14 +38,17 @@ function calculate_counters(elem, href){
 }
 /* Traverse 'rootNode' and its descendants and modify '<a>' tags */
 function modifyLinks(rootNode) {
-    ga('send', 'event', 'google_search', 'query',  $("#lst-ib").value);
+     _gaq.push(['_trackEvent', 'google_search', 'query', $("#lst-ib")[0].value]);
     var nodes = [rootNode];
     while (nodes.length > 0) {
         var node = nodes.shift();
         if (node.tagName == "A") {
             /* Modify the '<a>' element */
-            if (node.href.includes("stackoverflow.com/questions") && node.innerText.length > 1){
+            if (node.href.includes("stackoverflow.com/questions")
+            && !node.href.includes("stackoverflow.com/questions/tagged") 
+            && node.innerText.length > 1){
                 href = node.href.replace('http://stackoverflow','https://stackoverflow');
+                flag = true
                 calculate_counters(node, href);
             }
         } else {
@@ -103,21 +101,29 @@ var observer2 = new MutationObserver(function(mutations) {
     });
 });
 
-flag = true
+
 /* Start observing 'body' for 'div#search' */
 observer1.observe(document.body, config);
 
 function inject_text(elem, htmlElem){
-          answers = htmlElem.find('div.answer').size();
+          answers = htmlElem.find('div.answer')
+          answers_count = answers.size();
           accpeted_answer = htmlElem.find('div.accepted-answer').size();
-          score = htmlElem.find('.vote-count-post');
           max_score = 0;
-          for (i=1; i<score.size(); i++){
-            score_i = parseInt(score[i].innerHTML)
+          max_answer = answers[0];
+          for (i=0; i<answers_count; i++){
+            score = answers[i].getElementsByClassName('vote-count-post')[0].innerHTML;
+            score_i = parseInt(score)
             if (max_score < score_i){
                max_score = score_i;
+               max_answer = answers[i];
             }
           }
+            if (flag){
+              flag = false;
+              possible_answer(elem, max_answer)
+            }
+
           var div_top = document.createElement("div");
           div_top.className = "s";
 
@@ -125,37 +131,50 @@ function inject_text(elem, htmlElem){
           para.className += " st";
           para.dir = 'auto'
           para.style.color = STACK_COLOR
-          para.innerHTML = answers +" answers";
-          if (answers > 0){
+          para.innerHTML = answers_count +" answers";
+          if (answers_count > 0){
               para.innerHTML += " - Top answered score: " + max_score;        
           }
           if (accpeted_answer > 0){
-              para.innerHTML += " - <b>Accpeted Answer Available</b>";
-              if (flag){
-                flag = false
-          
-                                       var tmp1 = document.createElement("div");
-var title = document.createElement("div");
-                            title.className ="kno-ecr-pt kno-fb-ctx"
-                            title.innerHTML = 'First Accpeted Answer:'
-                            title.style.color = STACK_COLOR
-                        tmp1.className += " xpdopen";
-
-                        accpeted_answer_tmp = htmlElem.find('div.accepted-answer .answercell .post-text')[0]    
-                        tmp1.append(accpeted_answer_tmp)
-                                                $('#rhs').append(title)   
-
-                        $('#rhs').append(tmp1)   
-              }
+              para.innerHTML += " - <b>Accepted Answer Available</b>";
+             _gaq.push(['_trackEvent', 'accepted_answer', 'exsits']);
           }
 
           div_top.append(para);
           div = elem.parentElement.parentElement;
           div_top.dir = 'auto'
           div.append(div_top);
-          ga('send', 'event', 'inject_text', 'value',1);
+     _gaq.push(['_trackEvent', 'google_search', 'inject_text', 1]);
 
       
+}
+
+function possible_answer(elem, max_answer){
+    // adding possible answer to the search
+    var answer_div = document.createElement("div");
+    var title_div = document.createElement("div");
+    title_div.className ="kno-ecr-pt kno-fb-ctx"
+    title_div.innerHTML = POSSIBLE_ANSWER
+    title_div.setAttribute("style","padding-left: 15px;padding-right: 15px;");
+    answer_div.className += " xpdopen";
+    answer_div.setAttribute("style", "padding-left: 15px;padding-right: 15px;border-top: solid 1px #ebebeb;margin-top: 15px;")
+    max_answer = max_answer.getElementsByTagName('tr')[0]
+    max_answer.getElementsByClassName('votecell')[0].remove();
+    max_answer.getElementsByClassName('fw')[0].remove();
+    answer_div.append(max_answer.getElementsByClassName('post-text')[0]);
+    // adding source link
+    var source_div = document.createElement("div");
+    source_div.className += " xpdopen";
+    source_div.setAttribute("style", "padding-top: 15px;padding-left: 15px;border-top: solid 1px #ebebeb;margin-top: 15px;")
+    var source_a = document.createElement("a");
+    source_a.href = elem.href;
+    source_a.innerText = VIEW_SOURCE;
+    source_div.append(source_a);
+    $('#rhs')[0].setAttribute("style","border: solid 1px #ebebeb;min-width: 400px;max-width: 500px;");
+    $('#rhs').append(title_div);
+    $('#rhs').append(answer_div);   
+    $('#rhs').append(source_div);  
+  
 }
 
 
