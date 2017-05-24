@@ -1,7 +1,8 @@
 {
   "name": "Stack Search",
-  "description": "Enrich google search results. Adding: # of answer, and the rank of the top answer of StackOverFlow",
-  "version": "1.2.2",
+  "description": "Enrich google search results. Shows you possible answer to questions related to 
+  StackOverFlow, and for every search results: # of answer, and the rank of the top answer ",
+  "version": "1.2.3",
   "short_name": "Stack Search",
 "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
   "minimum_chrome_version": "16.0.884",

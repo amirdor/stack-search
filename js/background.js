@@ -11,7 +11,9 @@ _gaq.push(['_trackPageview']);
 flag = true;
 STACK_COLOR = ' #ff966b';
 POSSIBLE_ANSWER = 'Possible Answer'
-VIEW_SOURCE = 'View Source';
+VIEW_SOURCE = 'View Answer';
+COMMENTS = "<h4>Comments:<h4>";
+CODE_COLOR = "#eff0f1";
 /* MutationObserver configuration data: Listen for "childList"
  * mutations in the specified element and its descendants */
 var config = {
@@ -38,7 +40,7 @@ function calculate_counters(elem, href){
 }
 /* Traverse 'rootNode' and its descendants and modify '<a>' tags */
 function modifyLinks(rootNode) {
-     _gaq.push(['_trackEvent', 'google_search', 'query', $("#lst-ib")[0].value]);
+     _gaq.push(['_trackEvent', 'google_search', $("#lst-ib")[0].value]);
     var nodes = [rootNode];
     while (nodes.length > 0) {
         var node = nodes.shift();
@@ -144,7 +146,7 @@ function inject_text(elem, htmlElem){
           div = elem.parentElement.parentElement;
           div_top.dir = 'auto'
           div.append(div_top);
-     _gaq.push(['_trackEvent', 'google_search', 'inject_text', 1]);
+     _gaq.push(['_trackEvent', 'inject_text', 1]);
 
       
 }
@@ -158,16 +160,26 @@ function possible_answer(elem, max_answer){
     title_div.setAttribute("style","padding-left: 15px;padding-right: 15px;");
     answer_div.className += " xpdopen";
     answer_div.setAttribute("style", "padding-left: 15px;padding-right: 15px;border-top: solid 1px #ebebeb;margin-top: 15px;")
-    max_answer = max_answer.getElementsByTagName('tr')[0]
+    comment_answer = max_answer.getElementsByClassName('comments')[0];
+    share_link_data = max_answer.id
+    max_answer = max_answer.getElementsByTagName('tr')[0];
     max_answer.getElementsByClassName('votecell')[0].remove();
     max_answer.getElementsByClassName('fw')[0].remove();
-    answer_div.append(max_answer.getElementsByClassName('post-text')[0]);
+    answer_clean = max_answer.getElementsByClassName('post-text')[0];
+    code_pre = answer_clean.getElementsByTagName('pre');
+    for (i=0; i<code_pre.length; i++){
+      code_pre[i].style.whiteSpace = "pre-wrap";
+      code_pre[i].style.backgroundColor = CODE_COLOR;
+    }
+    answer_div.append(answer_clean);
+    instert_comments(comment_answer, answer_div);
     // adding source link
     var source_div = document.createElement("div");
     source_div.className += " xpdopen";
     source_div.setAttribute("style", "padding-top: 15px;padding-left: 15px;border-top: solid 1px #ebebeb;margin-top: 15px;")
     var source_a = document.createElement("a");
-    source_a.href = elem.href;
+    share_link = elem.href+"#"+share_link_data
+    source_a.href = share_link;
     source_a.innerText = VIEW_SOURCE;
     source_div.append(source_a);
     $('#rhs')[0].setAttribute("style","border: solid 1px #ebebeb;min-width: 400px;max-width: 500px;");
@@ -175,6 +187,32 @@ function possible_answer(elem, max_answer){
     $('#rhs').append(answer_div);   
     $('#rhs').append(source_div);  
   
+}
+
+function instert_comments(comment_answer, answer_div){
+  comment_actions = comment_answer.getElementsByClassName('comment-actions');
+  for (var i = comment_actions.length - 1; i >= 0; i--) {
+    comment_actions[i].remove();
+  }
+  comments = comment_answer.getElementsByClassName('comment-copy');
+  for (var i = 0; i < comments.length-1; i++) {
+    var h = document.createElement("hr")
+    h.style.paddingTop = "10px"
+    comments[i].append(h);
+  }
+  var comments_span = document.createElement('span')
+  comments_span.setAttribute("style", "border-top: solid 1px #ebebeb")
+  comments_span.innerHTML = COMMENTS
+  answer_div.append(comments_span);
+  
+  for (var i = 0; i < comments.length; i++) {
+    var comments_code_tags = comments[i].getElementsByTagName('code')
+    for (j=0; j<comments_code_tags.length; j++){
+      comments_code_tags[j].style.whiteSpace = "normal";
+      comments_code_tags[j].style.backgroundColor = CODE_COLOR;
+    }
+    answer_div.append(comments[i]);
+  }
 }
 
 
