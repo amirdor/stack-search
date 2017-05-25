@@ -10,7 +10,7 @@ Stack Search was created by [Dor Amir](amirdor@gmail.com)
 ### Installation
 Via Chrome browser, click on the link below
 
-[Chrome extension store]( https://chrome.google.com/webstore/detail/stack-search/mmbkjfdlhegphofeodeinpbcifaobacl)
+[Chrome extension store]( https://chrome.google.com/webstore/detail/stack-search/mmbkjfdlhegphofeodeinpbcifaobacl?utm_source=github&utm_medium=readme)
 
 Then, click on **"ADD TO CHROME"**
 
@@ -18,7 +18,10 @@ Then, click on **"ADD TO CHROME"**
 Search on Google, if the results will include any questions on stackoverflow you will get the enricment that **Stack Search** will give. 
 
 ### Results
-![results](screenshots/results.jpg)
+![Possible Answer](screenshots/results2.jpg)
+
+
+![Results](screenshots/results.jpg)
 
 License
 ----
