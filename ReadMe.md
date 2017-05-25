@@ -5,7 +5,7 @@ available, the max top answer score and if there is an accepted answer for this 
 
 Stack Search was created by [Dor Amir](amirdor@gmail.com)
 ### Version
-1.1.1
+1.2.3
 
 ### Installation
 Via Chrome browser, click on the link below
