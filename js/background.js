@@ -8,9 +8,11 @@ var _gaq = _gaq || [];
 _gaq.push(['_setAccount', 'UA-55950495-3']);
 _gaq.push(['_trackPageview']);
 
+answers_div = []
+g_current_index = 0
 flag = true;
 STACK_COLOR = ' #ff966b';
-POSSIBLE_ANSWER = 'Possible Answer'
+POSSIBLE_ANSWER = 'Possible Answers'
 VIEW_SOURCE = 'View Answer';
 COMMENTS = "<h4>Comments:<h4>";
 CODE_COLOR = "#eff0f1";
@@ -108,85 +110,106 @@ var observer2 = new MutationObserver(function(mutations) {
 observer1.observe(document.body, config);
 
 function inject_text(elem, htmlElem){
-          answers = htmlElem.find('div.answer')
-          answers_count = answers.size();
-          accpeted_answer = htmlElem.find('div.accepted-answer').size();
-          max_score = 0;
-          max_answer = answers[0];
-          for (i=0; i<answers_count; i++){
-            score = answers[i].getElementsByClassName('vote-count-post')[0].innerHTML;
-            score_i = parseInt(score)
-            if (max_score < score_i){
-               max_score = score_i;
-               max_answer = answers[i];
-            }
-          }
-            if (flag){
-              flag = false;
-              possible_answer(elem, max_answer)
-            }
+  answers = htmlElem.find('div.answer')
+  answers_count = answers.size();
+  accpeted_answer = htmlElem.find('div.accepted-answer').size();
+  max_score = 0;
+  max_answer = answers[0];
+  for (i=0; i<answers_count; i++){
+    score = answers[i].getElementsByClassName('vote-count-post')[0].innerHTML;
+    score_i = parseInt(score)
+    if (max_score < score_i){
+       max_score = score_i;
+       max_answer = answers[i];
+    }
+  }
+  if (flag){
+    title();
+    possible_answer(elem, max_answer)
+    flag = false;
+    var next_link = document.getElementById('next');
+    next_link.addEventListener('click', function() {
+      clicked(true)
+    });
+    var prev_link = document.getElementById('prev');
+    prev_link.addEventListener('click', function() {
+      clicked(false)
+    });
+    }
+  else{
+    possible_answer(elem, max_answer)
+  }
 
-          var div_top = document.createElement("div");
-          div_top.className = "s";
+  var div_top = document.createElement("div");
+  div_top.className = "s";
 
-          var para = document.createElement("span");
-          para.className += " st";
-          para.dir = 'auto'
-          para.style.color = STACK_COLOR
-          para.innerHTML = answers_count +" answers";
-          if (answers_count > 0){
-              para.innerHTML += " - Top answered score: " + max_score;        
-          }
-          if (accpeted_answer > 0){
-              para.innerHTML += " - <b>Accepted Answer Available</b>";
-             _gaq.push(['_trackEvent', 'accepted_answer', 'exsits']);
-          }
+  var para = document.createElement("span");
+  para.className += " st";
+  para.dir = 'auto'
+  para.style.color = STACK_COLOR
+  para.innerHTML = answers_count +" answers";
+  if (answers_count > 0){
+      para.innerHTML += " - Top answered score: " + max_score;        
+  }
+  if (accpeted_answer > 0){
+      para.innerHTML += " - <b>Accepted Answer Available</b>";
+     _gaq.push(['_trackEvent', 'accepted_answer', 'exsits']);
+  }
 
-          div_top.append(para);
-          div = elem.parentElement.parentElement;
-          div_top.dir = 'auto'
-          div.append(div_top);
-     _gaq.push(['_trackEvent', 'inject_text', 1]);
+  div_top.append(para);
+  div = elem.parentElement.parentElement;
+  div_top.dir = 'auto'
+  div.append(div_top);
+  _gaq.push(['_trackEvent', 'inject_text', 1]);
 
       
 }
 
+function title(){
+  var title_div = document.createElement("div");
+  title_div.className ="kno-ecr-pt kno-fb-ctx"
+  title_div.innerHTML = '<span style="cursor: pointer;" id="prev">◀ </span>' + POSSIBLE_ANSWER + '<span style="cursor: pointer;" id="next"> ▶</span>'
+  title_div.setAttribute("style","padding-left: 20px;padding-right: 20px;");
+  $('#rhs').append(title_div);
+}
+
+
 function possible_answer(elem, max_answer){
-    // adding possible answer to the search
-    var answer_div = document.createElement("div");
-    var title_div = document.createElement("div");
-    title_div.className ="kno-ecr-pt kno-fb-ctx"
-    title_div.innerHTML = POSSIBLE_ANSWER
-    title_div.setAttribute("style","padding-left: 15px;padding-right: 15px;");
-    answer_div.className += " xpdopen";
-    answer_div.setAttribute("style", "padding-left: 15px;padding-right: 15px;border-top: solid 1px #ebebeb;margin-top: 15px;")
-    comment_answer = max_answer.getElementsByClassName('comments')[0];
-    share_link_data = max_answer.id
-    max_answer = max_answer.getElementsByTagName('tr')[0];
-    max_answer.getElementsByClassName('votecell')[0].remove();
-    max_answer.getElementsByClassName('fw')[0].remove();
-    answer_clean = max_answer.getElementsByClassName('post-text')[0];
-    code_pre = answer_clean.getElementsByTagName('pre');
-    for (i=0; i<code_pre.length; i++){
-      code_pre[i].style.whiteSpace = "pre-wrap";
-      code_pre[i].style.backgroundColor = CODE_COLOR;
-    }
-    answer_div.append(answer_clean);
-    instert_comments(comment_answer, answer_div);
-    // adding source link
-    var source_div = document.createElement("div");
-    source_div.className += " xpdopen";
-    source_div.setAttribute("style", "padding-top: 15px;padding-left: 15px;border-top: solid 1px #ebebeb;margin-top: 15px;")
-    var source_a = document.createElement("a");
-    share_link = elem.href+"#"+share_link_data
-    source_a.href = share_link;
-    source_a.innerText = VIEW_SOURCE;
-    source_div.append(source_a);
-    $('#rhs')[0].setAttribute("style","border: solid 1px #ebebeb;min-width: 400px;max-width: 500px;");
-    $('#rhs').append(title_div);
-    $('#rhs').append(answer_div);   
-    $('#rhs').append(source_div);  
-  
+  // adding possible answer to the search
+  var answer_div = document.createElement("div");
+  answer_div.className += " xpdopen";
+  answer_div.setAttribute("style", "padding-top: 20px;padding-left: 20px;padding-right: 20px;border-top: solid 1px #ebebeb;margin-top: 15px;")
+  comment_answer = max_answer.getElementsByClassName('comments')[0];
+  share_link_data = max_answer.id
+  max_answer = max_answer.getElementsByTagName('tr')[0];
+  max_answer.getElementsByClassName('votecell')[0].remove();
+  max_answer.getElementsByClassName('fw')[0].remove();
+  answer_clean = max_answer.getElementsByClassName('post-text')[0];
+  // code_pre = answer_clean.getElementsByTagName('pre');
+  // for (i=0; i<code_pre.length; i++){
+  //   code_pre[i].style.whiteSpace = "pre-wrap";
+  //   code_pre[i].style.backgroundColor = CODE_COLOR;
+  // }
+  answer_div.append(answer_clean);
+  instert_comments(comment_answer, answer_div);
+  // adding source link
+  var source_div = document.createElement("div");
+  source_div.className += " xpdopen";
+  source_div.setAttribute("style", "padding-top: 20px;padding-left: 20px;border-top: solid 1px #ebebeb;margin-top: 15px;")
+  var source_a = document.createElement("a");
+  share_link = elem.href + "#" + share_link_data
+  source_a.href = share_link;
+  source_a.innerText = VIEW_SOURCE;
+  source_div.append(source_a);
+  $('#rhs')[0].setAttribute("style","border: solid 1px #ebebeb;min-width: 400px;max-width: 500px;");
+  var main_div = document.createElement('div');
+  main_div.append(answer_div);   
+  main_div.append(source_div); 
+  main_div.className = "main_div"
+  answers_div.push(main_div); 
+  if (flag){
+    $('#rhs').append(main_div);
+  }
 }
 
 function instert_comments(comment_answer, answer_div){
@@ -195,24 +218,42 @@ function instert_comments(comment_answer, answer_div){
     comment_actions[i].remove();
   }
   comments = comment_answer.getElementsByClassName('comment-copy');
-  for (var i = 0; i < comments.length-1; i++) {
+  var comments_size = comments.length;
+  for (var i = 0; i < comments_size-1  && i < 2; i++) {
     var h = document.createElement("hr")
     h.style.paddingTop = "10px"
     comments[i].append(h);
   }
-  var comments_span = document.createElement('span')
-  comments_span.setAttribute("style", "border-top: solid 1px #ebebeb")
-  comments_span.innerHTML = COMMENTS
-  answer_div.append(comments_span);
-  
-  for (var i = 0; i < comments.length; i++) {
-    var comments_code_tags = comments[i].getElementsByTagName('code')
-    for (j=0; j<comments_code_tags.length; j++){
-      comments_code_tags[j].style.whiteSpace = "normal";
-      comments_code_tags[j].style.backgroundColor = CODE_COLOR;
-    }
-    answer_div.append(comments[i]);
+
+  if (comments_size > 0){
+    var comments_span = document.createElement('span')
+    comments_span.setAttribute("style", "border-top: solid 1px #ebebeb")
+    comments_span.innerHTML = COMMENTS
+    answer_div.append(comments_span);
+  }
+  var  i = 0;
+  while(comments.length >0 && i < 3) {
+    answer_div.append(comments[0]);
+    i += 1;
   }
 }
+
+function clicked(next){
+  if (next){
+    g_current_index = (g_current_index + 1) % answers_div.length;
+   
+  }
+  else{
+    g_current_index = g_current_index - 1;
+    if (g_current_index < 0) {
+        g_current_index = answers_div.length - 1;
+    }
+  }
+  var next_div = answers_div[g_current_index];
+  $('.main_div')[0].remove();
+  $('#rhs').append(next_div);
+}
+
+
 
 
