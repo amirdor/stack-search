@@ -48,9 +48,7 @@ function modifyLinks(rootNode) {
         var node = nodes.shift();
         if (node.tagName == "A") {
             /* Modify the '<a>' element */
-            if (node.href.includes("stackoverflow.com/questions")
-            && !node.href.includes("stackoverflow.com/questions/tagged") 
-            && node.innerText.length > 1){
+            if (is_stack_link(node)){
                 href = node.href.replace('http://stackoverflow','https://stackoverflow');
                 flag = true
                 calculate_counters(node, href);
@@ -123,23 +121,22 @@ function inject_text(elem, htmlElem){
        max_answer = answers[i];
     }
   }
-  if (flag){
-    title();
-    possible_answer(elem, max_answer)
-    flag = false;
-    var next_link = document.getElementById('next');
-    next_link.addEventListener('click', function() {
-      clicked(true)
-    });
-    var prev_link = document.getElementById('prev');
-    prev_link.addEventListener('click', function() {
-      clicked(false)
-    });
-    }
-  else{
-    possible_answer(elem, max_answer)
+  if (max_answer){
+    first_answer_feature(elem, max_answer);
   }
+  create_answers_score(elem, answers_count, accpeted_answer);
+  _gaq.push(['_trackEvent', 'inject_text', 1]);
+}
 
+function title(){
+  var title_div = document.createElement("div");
+  title_div.className ="kno-ecr-pt kno-fb-ctx"
+  title_div.innerHTML = '<span style="cursor: pointer;" id="prev">◀ </span>' + POSSIBLE_ANSWER + '<span style="cursor: pointer;" id="next"> ▶</span>'
+  title_div.setAttribute("style","padding-left: 20px;padding-right: 20px;");
+  $('#rhs').append(title_div);
+}
+
+function create_answers_score(elem, answers_count, accpeted_answer){
   var div_top = document.createElement("div");
   div_top.className = "s";
 
@@ -160,47 +157,20 @@ function inject_text(elem, htmlElem){
   div = elem.parentElement.parentElement;
   div_top.dir = 'auto'
   div.append(div_top);
-  _gaq.push(['_trackEvent', 'inject_text', 1]);
-
-      
-}
-
-function title(){
-  var title_div = document.createElement("div");
-  title_div.className ="kno-ecr-pt kno-fb-ctx"
-  title_div.innerHTML = '<span style="cursor: pointer;" id="prev">◀ </span>' + POSSIBLE_ANSWER + '<span style="cursor: pointer;" id="next"> ▶</span>'
-  title_div.setAttribute("style","padding-left: 20px;padding-right: 20px;");
-  $('#rhs').append(title_div);
 }
 
 
 function possible_answer(elem, max_answer){
-  // adding possible answer to the search
-  var answer_div = document.createElement("div");
-  answer_div.className += " xpdopen";
-  answer_div.setAttribute("style", "padding-top: 20px;padding-left: 20px;padding-right: 20px;border-top: solid 1px #ebebeb;margin-top: 15px;")
-  comment_answer = max_answer.getElementsByClassName('comments')[0];
+  if (!max_answer){
+    return;
+  }
+  comment_answer = max_answer.getElementsByClassName('comments');
   share_link_data = max_answer.id
-  max_answer = max_answer.getElementsByTagName('tr')[0];
-  max_answer.getElementsByClassName('votecell')[0].remove();
-  max_answer.getElementsByClassName('fw')[0].remove();
-  answer_clean = max_answer.getElementsByClassName('post-text')[0];
-  // code_pre = answer_clean.getElementsByTagName('pre');
-  // for (i=0; i<code_pre.length; i++){
-  //   code_pre[i].style.whiteSpace = "pre-wrap";
-  //   code_pre[i].style.backgroundColor = CODE_COLOR;
-  // }
-  answer_div.append(answer_clean);
+  // adding possible answer to the search
+  answers_div = create_answer_div(max_answer);
   instert_comments(comment_answer, answer_div);
   // adding source link
-  var source_div = document.createElement("div");
-  source_div.className += " xpdopen";
-  source_div.setAttribute("style", "padding-top: 20px;padding-left: 20px;border-top: solid 1px #ebebeb;margin-top: 15px;")
-  var source_a = document.createElement("a");
-  share_link = elem.href + "#" + share_link_data
-  source_a.href = share_link;
-  source_a.innerText = VIEW_SOURCE;
-  source_div.append(source_a);
+  source_div = source_link(elem, share_link_data)
   $('#rhs')[0].setAttribute("style","border: solid 1px #ebebeb;min-width: 400px;max-width: 500px;");
   var main_div = document.createElement('div');
   main_div.append(answer_div);   
@@ -212,7 +182,39 @@ function possible_answer(elem, max_answer){
   }
 }
 
+function create_answer_div(max_answer){
+  answer_div = document.createElement("div");
+  answer_div.className += " xpdopen";
+  answer_div.setAttribute("style", "word-wrap: break-word;padding-top: 20px;padding-left: 20px;padding-right: 20px;border-top: solid 1px #ebebeb;margin-top: 15px;")
+  max_answer = max_answer.getElementsByTagName('tr')[0];
+  max_answer.getElementsByClassName('votecell')[0].remove();
+  max_answer.getElementsByClassName('fw')[0].remove();
+  answer_clean = max_answer.getElementsByClassName('post-text')[0];
+  imgs = answer_clean.getElementsByTagName('img');
+  for (i=0; i<imgs.length; i++){
+    imgs[i].style.width = '100%';
+  }
+  answer_div.append(answer_clean);
+  return answers_div;
+}
+
+function source_link(elem, share_link_data){
+  var source_div = document.createElement("div");
+  source_div.className += " xpdopen";
+  source_div.setAttribute("style", "padding-top: 20px;padding-left: 20px;border-top: solid 1px #ebebeb;margin-top: 15px;")
+  var source_a = document.createElement("a");
+  share_link = elem.href + "#" + share_link_data
+  source_a.href = share_link;
+  source_a.innerText = VIEW_SOURCE;
+  source_div.append(source_a);
+  return source_div;
+}
+
 function instert_comments(comment_answer, answer_div){
+  if (comment_answer.length < 1 ){
+      return;   
+  }
+  comment_answer = comment_answer[0];
   comment_actions = comment_answer.getElementsByClassName('comment-actions');
   for (var i = comment_actions.length - 1; i >= 0; i--) {
     comment_actions[i].remove();
@@ -254,6 +256,31 @@ function clicked(next){
   $('#rhs').append(next_div);
 }
 
+function first_answer_feature(elem, max_answer){
+  if (flag){
+    title();
+    possible_answer(elem, max_answer)
+    flag = false;
+    var next_link = document.getElementById('next');
+    next_link.addEventListener('click', function() {
+      clicked(true)
+    });
+    var prev_link = document.getElementById('prev');
+    prev_link.addEventListener('click', function() {
+      clicked(false)
+    });
+    }
+  else{
+    possible_answer(elem, max_answer)
+  }
+
+}
+
+function is_stack_link(node){
+  return (node.href.includes("stackoverflow.com/questions")
+            && !node.href.includes("stackoverflow.com/questions/tagged") 
+            && node.innerText.length > 1)
+}
 
 
 
