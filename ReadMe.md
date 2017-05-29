@@ -1,9 +1,14 @@
 # Stack Search
 
-Stack Search is a chrome extension that add to your google search related to stackoverflow the information about how many answers available, the max top answer score and if there is an accepted answer for this question.  
+Stack Search is a chrome extension that add to your google search related to stackoverflow and stackexchange the information about how many answers available, the max top answer score and if there is an accepted answer for this question.  
+
+What's new in version 1.3.0
+1. add information for  all sub domains of stackexchange.com 
+2. fix local problem (rtl and heberew problems)
+3. fix bugs
 
 What's new in version 1.2.5:
-1. fix issues.
+1. fix issues
 2. improve css for code block. 
 
 What's new in version 1.2.4:
@@ -12,7 +17,7 @@ What's new in version 1.2.4:
 
 Stack Search was created by [Dor Amir](amirdor@gmail.com)
 ### Version
-1.2.5
+1.3.0
 
 ### Installation
 Via Chrome browser, click on the link below

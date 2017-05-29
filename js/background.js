@@ -24,8 +24,6 @@ var config = {
 };
 var regex = /<a.*?>[^<]*<\/a>/;
 
-
-
 function calculate_counters(elem, href){
      $.ajax({
         async: true,
@@ -48,10 +46,10 @@ function modifyLinks(rootNode) {
         var node = nodes.shift();
         if (node.tagName == "A") {
             /* Modify the '<a>' element */
-            if (is_stack_link(node)){
-                href = node.href.replace('http://stackoverflow','https://stackoverflow');
-                flag = true
-                calculate_counters(node, href);
+            if (is_valid_links(node) && (is_stack_link(node) || is_stackexchange_link(node))){
+              href = node.href.replace('http://','https://');
+              flag = true
+              calculate_counters(node, href);
             }
         } else {
             /* If the current node has children, queue them for further
@@ -178,6 +176,7 @@ function possible_answer(elem, max_answer){
   main_div.className = "main_div"
   answers_div.push(main_div); 
   if (flag){
+    $('#rhs').attr("dir", "auto");
     $('#rhs').append(main_div);
   }
 }
@@ -283,4 +282,10 @@ function is_stack_link(node){
 }
 
 
+function is_stackexchange_link(node){
+  return /(http\:\/\/|https\:\/\/)[A-Z,a-z,0-9._]*.stackexchange.com\/questions\/[0-9]+\/.+/.test(node.href);
+}
 
+function is_valid_links(node){
+  return !(/https:\/\/translate\.google\.com\/translate\?.*/.test(node.href))
+}
