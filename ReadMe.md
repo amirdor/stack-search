@@ -20,7 +20,7 @@ What's new in version 1.2.4:
 
 Stack Search was created by [Dor Amir](amirdor@gmail.com)
 ### Version
-1.3.0
+1.3.2
 
 ### Installation
 Via Chrome browser, click on the link below

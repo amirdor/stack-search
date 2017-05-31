@@ -1,12 +1,28 @@
+/**
+ * Add your Analytics tracking ID here.
+ */
+var _AnalyticsCode = 'UA-55950495-3';
+/**
+ * Below is a modified version of the Google Analytics asynchronous tracking
+ * code snippet.  It has been modified to pull the HTTPS version of ga.js
+ * instead of the default HTTP version.  It is recommended that you use this
+ * snippet instead of the standard tracking snippet provided when setting up
+ * a Google Analytics account.
+ */
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', _AnalyticsCode]);
+_gaq.push(['_trackPageview']);
+
 (function() {
-  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  var ga = document.createElement('script');
+  ga.type = 'text/javascript';
+  ga.async = true;
   ga.src = 'https://ssl.google-analytics.com/ga.js';
-  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  ga.checkProtocolTask = null;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(ga, s);
 })();
 
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-55950495-3']);
-_gaq.push(['_trackPageview']);
 
 answers_div = []
 g_current_index = 0
@@ -16,6 +32,7 @@ POSSIBLE_ANSWER = 'Possible Answers'
 VIEW_SOURCE = 'View Answer';
 COMMENTS = "<h4>Comments:<h4>";
 CODE_COLOR = "#eff0f1";
+g_stack_link_count = 0;
 /* MutationObserver configuration data: Listen for "childList"
  * mutations in the specified element and its descendants */
 var config = {
@@ -50,6 +67,7 @@ function modifyLinks(rootNode) {
               href = node.href.replace('http://','https://');
               flag = true
               calculate_counters(node, href);
+              g_stack_link_count += 1;
             }
         } else {
             /* If the current node has children, queue them for further
@@ -61,6 +79,7 @@ function modifyLinks(rootNode) {
             });
         }
     }
+  _gaq.push(['_trackEvent', 'stack_answers_count','show', '', g_stack_link_count]);
 }
 
 /* Observer1: Looks for 'div.search' */
@@ -123,7 +142,7 @@ function inject_text(elem, htmlElem){
     first_answer_feature(elem, max_answer);
   }
   create_answers_score(elem, answers_count, accpeted_answer);
-  _gaq.push(['_trackEvent', 'inject_text', 1]);
+  _gaq.push(['_trackEvent', 'answers_count_per_link', 'show', '', answers_count]);
 }
 
 function title(){
@@ -148,7 +167,7 @@ function create_answers_score(elem, answers_count, accpeted_answer){
   }
   if (accpeted_answer > 0){
       para.innerHTML += " - <b>Accepted Answer Available</b>";
-     _gaq.push(['_trackEvent', 'accepted_answer', 'exsits']);
+     _gaq.push(['_trackEvent', 'accepted_answer', 'show','', 1]);
   }
 
   div_top.append(para);
@@ -242,6 +261,7 @@ function instert_comments(comment_answer, answer_div){
 function clicked(next){
   if (next){
     g_current_index = (g_current_index + 1) % answers_div.length;
+    _gaq.push(['_trackEvent', 'scroll_answer', 'next']);
    
   }
   else{
@@ -249,6 +269,7 @@ function clicked(next){
     if (g_current_index < 0) {
         g_current_index = answers_div.length - 1;
     }
+    _gaq.push(['_trackEvent', 'scroll_answer', 'prev']);
   }
   var next_div = answers_div[g_current_index];
   $('.main_div')[0].remove();
