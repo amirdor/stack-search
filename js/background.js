@@ -9,30 +9,26 @@ var _AnalyticsCode = 'UA-55950495-3';
  * snippet instead of the standard tracking snippet provided when setting up
  * a Google Analytics account.
  */
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', _AnalyticsCode]);
-_gaq.push(['_trackPageview']);
 
-(function() {
-  var ga = document.createElement('script');
-  ga.type = 'text/javascript';
-  ga.async = true;
-  ga.src = 'https://ssl.google-analytics.com/ga.js';
-  ga.checkProtocolTask = null;
-  var s = document.getElementsByTagName('script')[0];
-  s.parentNode.insertBefore(ga, s);
-})();
+ (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
+ga('create', _AnalyticsCode, 'auto');
+ga('send', 'pageview');
 
 answers_div = []
 g_current_index = 0
 flag = true;
 STACK_COLOR = ' #ff966b';
-POSSIBLE_ANSWER = 'Possible Answers'
+POSSIBLE_ANSWERS = 'Possible Answers'
+POSSIBLE_ANSWER = 'Possible Answer'
 VIEW_SOURCE = 'View Answer';
 COMMENTS = "<h4>Comments:<h4>";
 CODE_COLOR = "#eff0f1";
 g_stack_link_count = 0;
+
 /* MutationObserver configuration data: Listen for "childList"
  * mutations in the specified element and its descendants */
 var config = {
@@ -49,15 +45,21 @@ function calculate_counters(elem, href){
         success: function(response) {
           var htmlElem = $($.parseHTML(response));
           inject_text(elem, htmlElem)
-          },
-      error: function(xhr) {
+          g_stack_link_count -= 1;
+          if (g_stack_link_count == 0){
+            inject_answer();
+          }
+        },
+        error: function(xhr) {
               //Do Something to handle error
-      }
+        }
           });
 }
 /* Traverse 'rootNode' and its descendants and modify '<a>' tags */
 function modifyLinks(rootNode) {
-     _gaq.push(['_trackEvent', 'google_search', $("#lst-ib")[0].value]);
+    answers_div = [];
+    g_stack_link_count = 0;
+    ga('send', 'event', 'google_search', 'search', $("#lst-ib")[0].value);
     var nodes = [rootNode];
     while (nodes.length > 0) {
         var node = nodes.shift();
@@ -79,7 +81,9 @@ function modifyLinks(rootNode) {
             });
         }
     }
-  _gaq.push(['_trackEvent', 'stack_answers_count','show', '', g_stack_link_count]);
+  ga('send', 'event', 'stack_answers_count', 'show', g_stack_link_count);
+
+
 }
 
 /* Observer1: Looks for 'div.search' */
@@ -142,14 +146,17 @@ function inject_text(elem, htmlElem){
     first_answer_feature(elem, max_answer);
   }
   create_answers_score(elem, answers_count, accpeted_answer);
-  _gaq.push(['_trackEvent', 'answers_count_per_link', 'show', '', answers_count]);
+  ga('send', 'event', 'answers_count_per_link', 'show', answers_count);
 }
 
 function title(){
   var title_div = document.createElement("div");
   title_div.className ="kno-ecr-pt kno-fb-ctx"
-  title_div.innerHTML = '<span style="cursor: pointer;" id="prev">◀ </span>' + POSSIBLE_ANSWER + '<span style="cursor: pointer;" id="next"> ▶</span>'
   title_div.setAttribute("style","padding-left: 20px;padding-right: 20px;");
+  title_div.innerHTML = POSSIBLE_ANSWER;
+  if (answers_div.length > 1){
+  title_div.innerHTML = '<span style="cursor: pointer;" id="prev">◀ </span>' + POSSIBLE_ANSWERS + '<span style="cursor: pointer;" id="next"> ▶</span>'
+  }
   $('#rhs').append(title_div);
 }
 
@@ -167,7 +174,8 @@ function create_answers_score(elem, answers_count, accpeted_answer){
   }
   if (accpeted_answer > 0){
       para.innerHTML += " - <b>Accepted Answer Available</b>";
-     _gaq.push(['_trackEvent', 'accepted_answer', 'show','', 1]);
+      ga('send', 'event', 'accepted_answer', 'show', 1);
+
   }
 
   div_top.append(para);
@@ -184,7 +192,7 @@ function possible_answer(elem, max_answer){
   comment_answer = max_answer.getElementsByClassName('comments');
   share_link_data = max_answer.id
   // adding possible answer to the search
-  answers_div = create_answer_div(max_answer);
+  var answer_div = create_answer_div(max_answer);
   instert_comments(comment_answer, answer_div);
   // adding source link
   source_div = source_link(elem, share_link_data)
@@ -194,14 +202,14 @@ function possible_answer(elem, max_answer){
   main_div.append(source_div); 
   main_div.className = "main_div"
   answers_div.push(main_div); 
-  if (flag){
-    $('#rhs').attr("dir", "auto");
-    $('#rhs').append(main_div);
-  }
+  // if (flag){
+  //   $('#rhs').attr("dir", "auto");
+  //   $('#rhs').append(main_div);
+  // }
 }
 
 function create_answer_div(max_answer){
-  answer_div = document.createElement("div");
+  var answer_div = document.createElement("div");
   answer_div.className += " xpdopen";
   answer_div.setAttribute("style", "word-wrap: break-word;padding-top: 20px;padding-left: 20px;padding-right: 20px;border-top: solid 1px #ebebeb;margin-top: 15px;")
   max_answer = max_answer.getElementsByTagName('tr')[0];
@@ -213,7 +221,7 @@ function create_answer_div(max_answer){
     imgs[i].style.width = '100%';
   }
   answer_div.append(answer_clean);
-  return answers_div;
+  return answer_div;
 }
 
 function source_link(elem, share_link_data){
@@ -261,7 +269,7 @@ function instert_comments(comment_answer, answer_div){
 function clicked(next){
   if (next){
     g_current_index = (g_current_index + 1) % answers_div.length;
-    _gaq.push(['_trackEvent', 'scroll_answer', 'next']);
+    ga('send', 'event', 'scroll_answer', 'clicked', 'next');
    
   }
   else{
@@ -269,7 +277,7 @@ function clicked(next){
     if (g_current_index < 0) {
         g_current_index = answers_div.length - 1;
     }
-    _gaq.push(['_trackEvent', 'scroll_answer', 'prev']);
+    ga('send', 'event', 'scroll_answer', 'clicked', 'prev');
   }
   var next_div = answers_div[g_current_index];
   $('.main_div')[0].remove();
@@ -278,17 +286,9 @@ function clicked(next){
 
 function first_answer_feature(elem, max_answer){
   if (flag){
-    title();
+    
     possible_answer(elem, max_answer)
     flag = false;
-    var next_link = document.getElementById('next');
-    next_link.addEventListener('click', function() {
-      clicked(true)
-    });
-    var prev_link = document.getElementById('prev');
-    prev_link.addEventListener('click', function() {
-      clicked(false)
-    });
     }
   else{
     possible_answer(elem, max_answer)
@@ -309,4 +309,21 @@ function is_stackexchange_link(node){
 
 function is_valid_links(node){
   return !(/https:\/\/translate\.google\.com\/translate\?.*/.test(node.href))
+}
+
+function inject_answer(){
+  title();
+  $('#rhs').attr("dir", "auto");
+  $('#rhs').append(answers_div[0]);
+  if (answers_div.length > 1){
+    var next_link = document.getElementById('next');
+    next_link.addEventListener('click', function() {
+      clicked(true)
+    });
+    var prev_link = document.getElementById('prev');
+    prev_link.addEventListener('click', function() {
+      clicked(false)
+    });
+  }
+  
 }

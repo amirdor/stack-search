@@ -14,7 +14,7 @@
   "content_scripts": [ {
     "run_at" : "document_end",
     "js": [ "js/jquery.js", "js/background.js"],
-	"css" :[ "css/bootstrap.min.css", "css/back.css"],
+	"css" :[ "css/bootstrap.css" ],
  "matches": [ "*://*/*" ],
         "include_globs": ["*://*.google.*/*"]
   }],
