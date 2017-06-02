@@ -1,23 +1,3 @@
-/**
- * Add your Analytics tracking ID here.
- */
-var _AnalyticsCode = 'UA-55950495-3';
-/**
- * Below is a modified version of the Google Analytics asynchronous tracking
- * code snippet.  It has been modified to pull the HTTPS version of ga.js
- * instead of the default HTTP version.  It is recommended that you use this
- * snippet instead of the standard tracking snippet provided when setting up
- * a Google Analytics account.
- */
-
- (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-ga('create', _AnalyticsCode, 'auto');
-ga('send', 'pageview');
-
 answers_div = []
 g_current_index = 0
 flag = true;
@@ -28,6 +8,7 @@ VIEW_SOURCE = 'View Answer';
 COMMENTS = "<h4>Comments:<h4>";
 CODE_COLOR = "#eff0f1";
 g_stack_link_count = 0;
+window.app = window.app || {};
 
 /* MutationObserver configuration data: Listen for "childList"
  * mutations in the specified element and its descendants */
@@ -59,7 +40,7 @@ function calculate_counters(elem, href){
 function modifyLinks(rootNode) {
     answers_div = [];
     g_stack_link_count = 0;
-    ga('send', 'event', 'google_search', 'search', $("#lst-ib")[0].value);
+    app.TRACKER.event('event', 'query', $("#lst-ib")[0].value, 'search_query')
     var nodes = [rootNode];
     while (nodes.length > 0) {
         var node = nodes.shift();
@@ -68,8 +49,8 @@ function modifyLinks(rootNode) {
             if (is_valid_links(node) && (is_stack_link(node) || is_stackexchange_link(node))){
               href = node.href.replace('http://','https://');
               flag = true
-              calculate_counters(node, href);
               g_stack_link_count += 1;
+              calculate_counters(node, href);
             }
         } else {
             /* If the current node has children, queue them for further
@@ -81,9 +62,7 @@ function modifyLinks(rootNode) {
             });
         }
     }
-  ga('send', 'event', 'stack_answers_count', 'show', g_stack_link_count);
-
-
+  app.TRACKER.event('event', 'stack_links', g_stack_link_count + '', 'stack_links') 
 }
 
 /* Observer1: Looks for 'div.search' */
@@ -125,8 +104,14 @@ var observer2 = new MutationObserver(function(mutations) {
 });
 
 
-/* Start observing 'body' for 'div#search' */
-observer1.observe(document.body, config);
+//  Start observing 'body' for 'div#search' 
+// observer1.observe(document.body, config);
+
+// listen for document and resources loaded 
+window.addEventListener('load', function() { 
+observer1.observe(document.body, config); 
+});
+
 
 function inject_text(elem, htmlElem){
   answers = htmlElem.find('div.answer')
@@ -146,7 +131,7 @@ function inject_text(elem, htmlElem){
     first_answer_feature(elem, max_answer);
   }
   create_answers_score(elem, answers_count, accpeted_answer);
-  ga('send', 'event', 'answers_count_per_link', 'show', answers_count);
+  app.TRACKER.event('event', 'answers', answers_count + '', 'answers_count_per_link')  
 }
 
 function title(){
@@ -174,7 +159,7 @@ function create_answers_score(elem, answers_count, accpeted_answer){
   }
   if (accpeted_answer > 0){
       para.innerHTML += " - <b>Accepted Answer Available</b>";
-      ga('send', 'event', 'accepted_answer', 'show', 1);
+      app.TRACKER.event(app.TRACKER.EVENT.CORRECT)  
 
   }
 
@@ -202,10 +187,6 @@ function possible_answer(elem, max_answer){
   main_div.append(source_div); 
   main_div.className = "main_div"
   answers_div.push(main_div); 
-  // if (flag){
-  //   $('#rhs').attr("dir", "auto");
-  //   $('#rhs').append(main_div);
-  // }
 }
 
 function create_answer_div(max_answer){
@@ -269,15 +250,15 @@ function instert_comments(comment_answer, answer_div){
 function clicked(next){
   if (next){
     g_current_index = (g_current_index + 1) % answers_div.length;
-    ga('send', 'event', 'scroll_answer', 'clicked', 'next');
-   
+    app.TRACKER.event(app.TRACKER.EVENT.NEXT)  
+
   }
   else{
     g_current_index = g_current_index - 1;
     if (g_current_index < 0) {
         g_current_index = answers_div.length - 1;
     }
-    ga('send', 'event', 'scroll_answer', 'clicked', 'prev');
+    app.TRACKER.event(app.TRACKER.EVENT.PREV)  
   }
   var next_div = answers_div[g_current_index];
   $('.main_div')[0].remove();
