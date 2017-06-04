@@ -7,3 +7,5 @@ $('.btn_an').click(function () {
 function trackButton(e) {
 	app.TRACKER.event('event',  e.id, 'clicked');
 };	
+
+app.TRACKER.page('popups.html')

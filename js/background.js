@@ -9,7 +9,7 @@ COMMENTS = "<h4>Comments:<h4>";
 CODE_COLOR = "#eff0f1";
 g_stack_link_count = 0;
 window.app = window.app || {};
-
+app.TRACKER.page('background.js')
 /* MutationObserver configuration data: Listen for "childList"
  * mutations in the specified element and its descendants */
 var config = {
@@ -40,7 +40,6 @@ function calculate_counters(elem, href){
 function modifyLinks(rootNode) {
     answers_div = [];
     g_stack_link_count = 0;
-    app.TRACKER.event('event', 'query', $("#lst-ib")[0].value, 'search_query')
     var nodes = [rootNode];
     while (nodes.length > 0) {
         var node = nodes.shift();
@@ -263,6 +262,9 @@ function clicked(next){
   var next_div = answers_div[g_current_index];
   $('.main_div')[0].remove();
   $('#rhs').append(next_div);
+  $('pre code').each(function(i, block) {
+    hljs.highlightBlock(block);
+  }); 
 }
 
 function first_answer_feature(elem, max_answer){
@@ -306,5 +308,7 @@ function inject_answer(){
       clicked(false)
     });
   }
-  
+  $('pre code').each(function(i, block) {
+    hljs.highlightBlock(block);
+  }); 
 }
