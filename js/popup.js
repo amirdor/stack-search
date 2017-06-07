@@ -1,11 +1,14 @@
 window.app = window.app || {};
 
-$('.btn_an').click(function () {
-	trackButton($(this)[0])
-});
+window.addEventListener('load', _onLoad);
 
 function trackButton(e) {
-	app.TRACKER.event('event',  e.id, 'clicked');
-};	
+  app.TRACKER.event('event', e.id, 'clicked');
+};
 
-app.TRACKER.page('popups.html')
+function _onLoad() {
+  app.TRACKER.page('popups.html');
+  $('.btn_an').click(function() {
+    trackButton($(this)[0])
+  });
+}
