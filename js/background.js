@@ -1,4 +1,4 @@
-const STACK_COLOR = ' #ff966b';
+const STACK_COLOR = '#ff966b';
 const POSSIBLE_ANSWERS = 'Possible Answers';
 const POSSIBLE_ANSWER = 'Possible Answer';
 const VIEW_SOURCE = 'View Answer';
@@ -272,7 +272,7 @@ function doante() {
   rhs = $('#rhs');
   donate_div = document.createElement('div');
   donate_div.id = "new";
-  donate_div.className = " rhsvw kno-ftr";
+  donate_div.className = " rhsvw";
   donate_div.style = rhs[0].style;
   sub_row = document.createElement('div');
   sub_row.className = "row";
