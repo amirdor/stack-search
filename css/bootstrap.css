@@ -6744,3 +6744,39 @@ button.close {
   }
 }
 /*# sourceMappingURL=bootstrap.css.map */
+
+.big #new {
+    margin-left: 792px;
+}
+
+.mw #new {
+    margin-left: 820px;
+}
+
+
+#new{
+    position: relative;
+    display: block;
+    margin-left: 712px;
+    padding-bottom: 10px;
+    min-width: 268px;
+    padding-top: 5px;
+}
+
+.feedback_a{
+  color: #777;
+  float: right;
+  font-style: italic;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  font-size: 11px;
+  line-height: normal;
+}
+
+
+.donate_a{
+  color: #777;
+  font-style: italic;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  font-size: 11px;
+  line-height: normal;
+}

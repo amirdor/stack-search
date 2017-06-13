@@ -46,7 +46,7 @@ function modifyLinks(rootNode) {
     var node = nodes.shift();
     if (node.tagName == "A") {
       /* Modify the '<a>' element */
-      if (is_valid_links(node) && (is_stack_link(node) || is_stackexchange_link(node))) {
+      if (app.Utils.valid_link(node)) {
         href = node.href.replace('http://', 'https://');
         g_stack_link_count += 1;
         calculate_counters(node, href);
@@ -132,7 +132,8 @@ function title() {
   title_div.setAttribute("style", "padding-left: 20px;padding-right: 20px;");
   title_div.innerHTML = POSSIBLE_ANSWER;
   if (answers_div.length > 1) {
-    var pages = ' <span id="pages"><span id="c_page">1</span> / ' + answers_div.length + '</span>'
+    max_size_answers = answers_div.length
+    var pages = ' <span id="pages"><span id="c_page">1</span> / ' + max_size_answers + '</span>'
     title_div.innerHTML = prev_span + POSSIBLE_ANSWERS + pages + next_span
   }
   $('#rhs').append(title_div);
@@ -173,7 +174,7 @@ function possible_answer(elem, max_answer) {
   instert_comments(comment_answer, answer_div);
   // adding source link
   source_div = source_link(elem, share_link_data)
-  $('#rhs')[0].setAttribute("style", "border: solid 1px #ebebeb;min-width: 400px;max-width: 500px;");
+  $('#rhs')[0].setAttribute("style", "border: solid 1px #ebebeb;min-width: 400px;max-width: 450px;");
   var main_div = document.createElement('div');
   main_div.append(answer_div);
   main_div.append(source_div);
@@ -243,15 +244,14 @@ function clicked(next) {
   if (next) {
     g_current_index += 1;
     app.TRACKER.event(app.TRACKER.EVENT.NEXT)
-    // if (g_current_index >= answers_div.length) {
-    //   g_current_index = 0;
-    // }
-  } 
-  else {
+    if (g_current_index >= max_size_answers) {
+      g_current_index = 0;
+    }
+  } else {
     app.TRACKER.event(app.TRACKER.EVENT.PREV)
     g_current_index -= 1;
     if (g_current_index < 0) {
-      g_current_index = answers_div.length - 1; 
+      g_current_index = max_size_answers - 1;
     }
   }
 
@@ -268,19 +268,33 @@ function first_answer_feature(elem, max_answer) {
   possible_answer(elem, max_answer)
 }
 
-function is_stack_link(node) {
-  return (node.href.includes("stackoverflow.com/questions") &&
-    !node.href.includes("stackoverflow.com/questions/tagged") &&
-    node.innerText.length > 1)
+function doante() {
+  rhs = $('#rhs');
+  donate_div = document.createElement('div');
+  donate_div.id = "new";
+  donate_div.className = " rhsvw kno-ftr";
+  donate_div.style = rhs[0].style;
+  sub_row = document.createElement('div');
+  sub_row.className = "row";
+  left_col = document.createElement('div');
+  left_col.className = "col-lg-6";
+  left_col.innerHTML = "<p class='donate_a'>Love this extension? <a id='donate_' class='donate_a b_b_click' target='_blank' href='https://www.paypal.me/doramir/10'>Consider donating!</a><p>"
+
+  right_col = document.createElement('div');
+  right_col.className = "col-lg-4 pull-right";
+  feedback = "<p class='pull-right'><a id='feedback_' style='color: rgb(119, 119, 119);padding-right: 10px;' target='_blank' \
+  href='https://github.com/DCookieMonster/stack-search/issues' class='feedback_a b_b_click'>Feedback</a></p>";
+  right_col.innerHTML += feedback;
+
+  sub_row.append(left_col);
+  sub_row.append(right_col);
+  donate_div.append(sub_row);
+  $("#rhscol").append(donate_div);
+  $('.b_b_click').click(function() {
+    app.TRACKER.event('event', $(this)[0].id, 'main_screen', 'clicked');
+  });
 }
 
-function is_stackexchange_link(node) {
-  return /(http\:\/\/|https\:\/\/)[A-Z,a-z,0-9._]*.stackexchange.com\/questions\/[0-9]+\/.+/.test(node.href);
-}
-
-function is_valid_links(node) {
-  return !(/https:\/\/translate\.google\.com\/translate\?.*/.test(node.href))
-}
 
 function inject_answer() {
   if (answers_div.length == 0) {
@@ -302,4 +316,5 @@ function inject_answer() {
   $('pre code').each(function(i, block) {
     hljs.highlightBlock(block);
   });
+  doante();
 }

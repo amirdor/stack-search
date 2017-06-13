@@ -3,7 +3,7 @@ window.app = window.app || {};
 window.addEventListener('load', _onLoad);
 
 function trackButton(e) {
-  app.TRACKER.event('event', e.id, 'clicked');
+  app.TRACKER.event('event', e.id, 'popup', 'clicked');
 };
 
 function _onLoad() {
