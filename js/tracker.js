@@ -30,6 +30,16 @@ app.TRACKER = (function() {
       eventCategory: 'arrows',
       eventAction: 'clicked',
       eventLabel: 'prev',
+    },
+    SAVED_OPTIONS: {
+      eventCategory: 'save',
+      eventAction: 'clicked',
+      eventLabel: 'options',
+    },
+    RESET_OPTIONS: {
+      eventCategory: 'reset',
+      eventAction: 'clicked',
+      eventLabel: 'options',
     }
   };
 
@@ -82,7 +92,8 @@ app.TRACKER = (function() {
         ev.eventLabel = label ? label.replaceAll(' ', '+') : ev.eventLabel;
         ev.eventAction = action ? action.replaceAll(' ', '+') : ev.eventAction;
         ev.eventCategory = category ? category.replaceAll(' ', '+') : ev.eventCategory;
-        ga('send', ev);
+        // ga('send', ev);
+        console.log(ev)
       }
     },
 

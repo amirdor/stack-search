@@ -10,6 +10,7 @@ app.ANSWERS = (function() {
   const COMMENTS = "<h4>Comments:<h4>";
   const next_span = '<span style="cursor: pointer;" id="next"> ▶</span>';
   const prev_span = '<span style="cursor: pointer;" id="prev">◀ </span>';
+  var storage = {}
 
   function _calculate_counters(elem, href) {
     $.ajax({
@@ -18,15 +19,22 @@ app.ANSWERS = (function() {
       type: "get", //send it through get method
       success: function(response) {
         var htmlElem = $($.parseHTML(response));
-        _inject_text(elem, htmlElem)
+
+        _inject_text(elem, htmlElem);
         g_stack_link_count -= 1;
         if (g_stack_link_count == 0) {
-          _inject_answer();
+          if (storage['possible_answers']) {
+            _inject_answer();
+
+          }
+
         }
       },
       error: function(xhr) {
         //Do Something to handle error
-        app.TRACKER.event('event', 'AJAX_error', href, xhr + "")
+        console.log("XHR")
+        console.log(xhr)
+        app.TRACKER.event('event', 'AJAX_error', href, xhr)
       }
     });
   }
@@ -49,7 +57,10 @@ app.ANSWERS = (function() {
       if (max_answer) {
         _possible_answer(elem, max_answer)
       }
-      _create_answers_score(elem, answers_count, accpeted_answer, max_score);
+      if (storage['answers']) {
+        _create_answers_score(elem, answers_count, accpeted_answer, max_score);
+
+      }
       app.TRACKER.event('event', 'answers', answers_count + '', 'answers_count_per_link')
     } catch (error) {
       app.TRACKER.event('event', 'error', '_inject_text', error.message)
@@ -76,7 +87,7 @@ app.ANSWERS = (function() {
     var para = document.createElement("span");
     para.className += " st";
     para.dir = 'auto'
-    para.style.color = STACK_COLOR
+    para.style.color = storage['answer_color'];
     para.innerHTML = answers_count + " answers";
     if (answers_count > 0) {
       para.innerHTML += " - Top answered score: " + max_score;
@@ -281,7 +292,11 @@ app.ANSWERS = (function() {
 
   return {
     show_answers: function(elem, href) {
-      _calculate_counters(elem, href)
+      chrome.storage.sync.get(null, function(items) {
+        var allKeys = Object.keys(items);
+        storage = items;
+        _calculate_counters(elem, href)
+      });
     }
 
   };
