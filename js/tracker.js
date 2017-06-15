@@ -92,8 +92,7 @@ app.TRACKER = (function() {
         ev.eventLabel = label ? label.replaceAll(' ', '+') : ev.eventLabel;
         ev.eventAction = action ? action.replaceAll(' ', '+') : ev.eventAction;
         ev.eventCategory = category ? category.replaceAll(' ', '+') : ev.eventCategory;
-        // ga('send', ev);
-        console.log(ev)
+        ga('send', ev);
       }
     },
 
