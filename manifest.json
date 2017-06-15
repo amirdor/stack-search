@@ -1,19 +1,19 @@
 {
   "name": "Stack Search",
   "description": "Enrich stackoverflow results on google. Shows you possible answer and for each results: # of answer, and the rank of the top answer ",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "short_name": "Stack Search",
   "content_security_policy": "script-src 'self' https://www.google-analytics.com/; object-src 'self'",
   "minimum_chrome_version": "16.0.884",
   "background": {
     "run_at": "document_end",
     "page": "html/background.html",
-    "js": ["js/analytics.js", "js/tracker.js", "js/background.js"],
+    "js": ["js/analytics.js", "js/tracker.js", "js/answers_manager.js", "js/background.js"],
     "persistent": false
   },
   "content_scripts": [{
     "run_at": "document_end",
-    "js": ["js/jquery.js", "js/highlight.min.js", "js/analytics.js", "js/utils.js", "js/tracker.js", "js/background.js"],
+    "js": ["js/jquery.js", "js/highlight.min.js", "js/analytics.js", "js/utils.js", "js/tracker.js", "js/answers_manager.js", "js/background.js"],
     "css": ["css/bootstrap.css", "css/default.min.css"],
     "matches": ["*://*/*"],
     "include_globs": ["*://www.google.*/*", "*://google.*/*"]

@@ -6763,6 +6763,21 @@ button.close {
     padding-top: 5px;
 }
 
+html[dir='rtl'] .big #new {
+  margin-left: auto;
+  margin-right: 792px;
+}
+
+html[dir='rtl'] .mw #new {
+  margin-left: auto;
+  margin-right: 820px;
+}
+
+html[dir='rtl'] #new {
+  margin-left: auto;
+  margin-right: 712px;
+}
+
 .feedback_a{
   color: #777;
   float: right;
@@ -6780,3 +6795,7 @@ button.close {
   font-size: 11px;
   line-height: normal;
 }
+
+/*html[dir='rtl'] .donate_a{
+  float: left;
+}*/
