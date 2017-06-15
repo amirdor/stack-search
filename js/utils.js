@@ -3,7 +3,7 @@ window.app = window.app || {};
 app.Utils = (function() {
   'use strict';
 
-  const VERSION = '1.4.4';
+  const VERSION = '1.5.0';
 
   function _is_supported_link_link(node) {
     return /(http\:\/\/|https\:\/\/)[A-Z,a-z,0-9._]*(askubuntu|serverfault|superuser|stackexchange|stackoverflow).com\/questions\/[0-9]+\/.+/.test(node.href);
