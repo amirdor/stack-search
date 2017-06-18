@@ -115,7 +115,6 @@ app.ANSWERS = (function() {
       _instert_comments(comment_answer, answer_div);
       // adding source link
       var source_div = source_link(elem, share_link_data)
-      $('#rhs')[0].setAttribute("style", "border: solid 1px #ebebeb;min-width: 400px;max-width: 450px;");
       var main_div = document.createElement('div');
       main_div.append(answer_div);
       main_div.append(source_div);
@@ -259,6 +258,8 @@ app.ANSWERS = (function() {
       if (answers_div.length == 0) {
         return; // fix issue when there is no answer
       }
+      $('#rhs')[0].setAttribute("style", "border: solid 1px #ebebeb;min-width: 400px;max-width: 450px;");
+
       // create title for the possible answer
       _title();
 
@@ -295,6 +296,9 @@ app.ANSWERS = (function() {
       chrome.storage.sync.get(null, function(items) {
         var allKeys = Object.keys(items);
         storage = items;
+        if (Object.keys(storage).length === 0 && storage.constructor === Object) {
+          storage = app.Utils.default_storge();
+        }
         _calculate_counters(elem, href)
       });
     }
