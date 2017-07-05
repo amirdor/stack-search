@@ -1,4 +1,5 @@
 window.app = window.app || {};
+var bg = chrome.extension.getBackgroundPage();
 
 window.addEventListener('load', _onLoad);
 
@@ -13,8 +14,6 @@ function _onLoad() {
   });
   app.Utils.restore_options();
 }
-document.getElementById('reset').addEventListener('click', app.Utils.reset_options);
-
 classname = document.getElementsByClassName("options")
 for (var i = 0; i < classname.length; i++) {
   classname[i].addEventListener("change", app.Utils.save_options);
@@ -24,4 +23,8 @@ document.getElementById('open_options').addEventListener('click', function() {
   chrome.tabs.create({
     'url': 'chrome://extensions/?options=' + chrome.runtime.id
   });
+})
+
+document.getElementById('register').addEventListener('click', function() {
+  StackExchangeWrapper.auth.requestToken();
 })

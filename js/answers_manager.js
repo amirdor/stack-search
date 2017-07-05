@@ -19,8 +19,8 @@ app.ANSWERS = (function() {
       type: "get", //send it through get method
       success: function(response) {
         var htmlElem = $($.parseHTML(response));
-
-        _inject_text(elem, htmlElem);
+        var site = href.split('.')[0].split('//')[1];
+        _inject_text(elem, htmlElem, site);
         g_stack_link_count -= 1;
         if (g_stack_link_count == 0) {
           if (storage['possible_answers']) {
@@ -32,14 +32,12 @@ app.ANSWERS = (function() {
       },
       error: function(xhr) {
         //Do Something to handle error
-        console.log("XHR")
-        console.log(xhr)
         app.TRACKER.event('event', 'AJAX_error', href, xhr)
       }
     });
   }
 
-  function _inject_text(elem, htmlElem) {
+  function _inject_text(elem, htmlElem, site) {
     try {
       var answers = htmlElem.find('div.answer')
       var answers_count = answers.size();
@@ -55,7 +53,7 @@ app.ANSWERS = (function() {
         }
       }
       if (max_answer) {
-        _possible_answer(elem, max_answer)
+        _possible_answer(elem, max_answer, max_score, site)
       }
       if (storage['answers']) {
         _create_answers_score(elem, answers_count, accpeted_answer, max_score);
@@ -103,7 +101,7 @@ app.ANSWERS = (function() {
     div.append(div_top);
   }
 
-  function _possible_answer(elem, max_answer) {
+  function _possible_answer(elem, max_answer, max_score, site) {
     try {
       if (!max_answer) {
         return;
@@ -111,10 +109,16 @@ app.ANSWERS = (function() {
       var comment_answer = max_answer.getElementsByClassName('comments');
       var share_link_data = max_answer.id
         // adding possible answer to the search
+      var voting_info = {
+        'voteup': false,
+        'votedown': false
+      }
+      voting_info['voteup'] = max_answer.getElementsByClassName('vote-up-on').length > 0;
+      voting_info['votedown'] = max_answer.getElementsByClassName('vote-down-on').length > 0;
       var answer_div = _create_answer_div(max_answer);
       _instert_comments(comment_answer, answer_div);
       // adding source link
-      var source_div = source_link(elem, share_link_data)
+      var source_div = _source_link(elem, share_link_data, max_score, site, voting_info)
       var main_div = document.createElement('div');
       main_div.append(answer_div);
       main_div.append(source_div);
@@ -142,16 +146,59 @@ app.ANSWERS = (function() {
     return answer_div;
   }
 
-  function source_link(elem, share_link_data) {
+  function _source_link(elem, share_link_data, max_score, site, voting_info) {
+    var bottom_div = document.createElement("div");
+    bottom_div.className += " xpdopen";
     var source_div = document.createElement("div");
-    source_div.className += " xpdopen";
-    source_div.setAttribute("style", "padding-top: 20px;padding-left: 20px;border-top: solid 1px #ebebeb;margin-top: 15px;")
+    source_div.className += " col-sm-7";
+
+    var row_div = document.createElement('div');
+    row_div.className = "row";
+
+    bottom_div.setAttribute("style", "padding-top: 20px;padding-left: 20px;border-top: solid 1px #ebebeb;margin-top: 15px;")
     var source_a = document.createElement("a");
     var share_link = elem.href + "#" + share_link_data
     source_a.href = share_link;
+    source_a.target = '_blank';
     source_a.innerText = VIEW_SOURCE;
     source_div.append(source_a);
-    return source_div;
+
+    var vote_div = document.createElement('div');
+    vote_div.className += " col-sm-3";
+    vote_div.setAttribute("style", "padding-left: 4%;")
+
+    var vote_down_source = document.createElement('span');
+    vote_down_source.id = 'downvote_' + site + '_' + share_link_data
+    vote_down_source.className += ' vote downvote'
+    vote_down_source.innerHTML = '<i class="fa fa-thumbs-o-down fa-2x fa-flip-horizontal" aria-hidden="true"></i>';
+    if (voting_info['downvote']) {
+      vote_down_source.innerHTML = '<i class="fa fa-thumbs-down fa-2x fa-flip-horizontal" aria-hidden="true"></i>';
+    }
+    vote_div.append(vote_down_source);
+
+    var score_source = document.createElement('span');
+    score_source.setAttribute("style", "padding-left: 5%;")
+    score_source.id = 'score_' + site + '_' + share_link_data;
+    score_source.setAttribute("style", "padding-bottom: 5%");
+    score_source.innerHTML = max_score;
+    vote_div.append(score_source);
+
+    var vote_up_source = document.createElement('span');
+    vote_up_source.setAttribute("style", "padding-left: 5%;")
+    vote_up_source.id = 'upvote_' + site + '_' + share_link_data;
+    vote_up_source.className += ' vote upvote';
+    vote_up_source.innerHTML += '<i class="fa fa-thumbs-o-up fa-2x" aria-hidden="true"></i>';
+    if (voting_info['downvote']) {
+      vote_up_source.innerHTML += '<i class="fa fa-thumbs-up fa-2x" aria-hidden="true"></i>';
+    }
+
+    vote_div.append(vote_up_source);
+
+    row_div.append(source_div);
+    row_div.append(vote_div);
+    bottom_div.append(row_div);
+
+    return bottom_div;
   }
 
   function _instert_comments(comment_answer, answer_div) {
@@ -209,6 +256,7 @@ app.ANSWERS = (function() {
       $('#c_page')[0].innerHTML = g_current_index + 1;
       $('.main_div')[0].remove();
       $('#rhs').append(next_div);
+      _render_votes();
       $('pre code').each(function(i, block) {
         hljs.highlightBlock(block);
       });
@@ -277,9 +325,11 @@ app.ANSWERS = (function() {
         prev_link.addEventListener('click', function() {
           _clicked(false)
         });
-      }
 
-      // highlight code blocks
+      }
+      _render_votes();
+      StackExchangeWrapper.auth.getToken()
+        // highlight code blocks
       $('pre code').each(function(i, block) {
         hljs.highlightBlock(block);
       });
@@ -291,11 +341,45 @@ app.ANSWERS = (function() {
     }
   }
 
+  function vote(action, answer_id, site) {
+    if (!StackExchangeWrapper.auth.getToken()) {
+      // No token? No request!
+      for (var i = 4; i >= 0; i--) {
+        var token = StackExchangeWrapper.auth.getToken();
+        if (token && token != '') {
+          StackExchangeWrapper.postVote(answer_id, site, action)
+          return;
+        }
+      }
+      StackExchangeWrapper.auth.requestTokenMain();
+      StackExchangeWrapper.emit('error', 'No access token found, cannot connect to StackExchange API');
+      return;
+    }
+    StackExchangeWrapper.postVote(answer_id, site, action)
+  }
+
+  function _render_votes() {
+    var vote_up = document.getElementsByClassName('vote');
+    for (var i = 0; i < vote_up.length; i++) {
+      vote_up[i].addEventListener("click",
+        function(event) {
+          event.preventDefault();
+          var info = this.id.split('_');
+          var id_arr = this.id.split('-');
+          var id = id_arr[id_arr.length - 1];
+          var site = info[1];
+          vote(info[0], id, site);
+        },
+        false);
+    }
+  }
+
   return {
     show_answers: function(elem, href) {
       chrome.storage.sync.get(null, function(items) {
         var allKeys = Object.keys(items);
         storage = items;
+        window.token = items['se_auth_token'];
         if (Object.keys(storage).length === 0 && storage.constructor === Object) {
           storage = app.Utils.default_storge();
         }

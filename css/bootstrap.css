@@ -6787,7 +6787,6 @@ html[dir='rtl'] #new {
   line-height: normal;
 }
 
-
 .donate_a{
   color: #777;
   font-style: italic;
@@ -6796,6 +6795,12 @@ html[dir='rtl'] #new {
   line-height: normal;
 }
 
-/*html[dir='rtl'] .donate_a{
-  float: left;
-}*/
+.vote{
+  cursor: pointer;
+}
+
+.fa{
+  font-size: 22px;
+  padding-left: 5%;
+    }
+

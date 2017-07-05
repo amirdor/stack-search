@@ -40,6 +40,11 @@ app.TRACKER = (function() {
       eventCategory: 'reset',
       eventAction: 'clicked',
       eventLabel: 'options',
+    },
+    DEACTIVATE: {
+      eventCategory: 'deactivate',
+      eventAction: 'clicked',
+      eventLabel: 'success',
     }
   };
 
