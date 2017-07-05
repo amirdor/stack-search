@@ -1,16 +1,24 @@
 # Stack Search
 
-Stack Search is a chrome extension that add to your google search related to stackoverflow and stackexchange the information about how many answers available, the max top answer score and if there is an accepted answer for this question.  
+Stack Search is the chrome extension you’ve always dreamed of!
 
-What's new in version 1.5.0
-1. option page
-	1.1 choose the color of the answers
-	1.2 choose to hide the answers under the search results
-	1.3 choose to hide the possible answers section.
+Stack Search adds to your Google Search results a filtered set of the most relevant answers from your top trusted coding sources: StackOverflow and StackExchange. These results are displayed on the right-hand side of the Google SERP, along with links to reach the exact source of the chosen answer.
+
+Additionally, the extension displays the amount of answers available under each StackOverflow and StackExchange organic search result, along with a score for the answer and whether the latter has been accepted as reliable.
+
+A quick install will change the way you search for coding help forever! It doesn’t take space nor makes the SERP loading time slower.
+
+I hope you enjoy it and please, share it and leave comments for further improvements!
+
+What's new in version 1.6.0
+1. login with your stack exhange account
+2. up vote and down vote an answer
+3. see possible answer score
 
 Stack Search was created by [Dor Amir](amirdor@gmail.com)
+
 ### Version
-1.5.0
+1.6.0
 
 ### Installation
 Via Chrome browser, click on the link below
