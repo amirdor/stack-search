@@ -325,6 +325,19 @@ app.ANSWERS = (function() {
         prev_link.addEventListener('click', function() {
           _clicked(false)
         });
+        $(document).keydown(function(e) {
+            switch(e.which) {
+              case 39: // left
+              _clicked(true)
+              break;
+
+              case 37: // right
+               _clicked(false)
+               break;
+            default: return; // exit this handler for other keys
+          }
+            e.preventDefault(); // prevent the default action (scroll / move caret)
+          });
 
       }
       _render_votes();
@@ -380,7 +393,7 @@ app.ANSWERS = (function() {
         var allKeys = Object.keys(items);
         storage = items;
         window.token = items['se_auth_token'];
-        if (Object.keys(storage).length === 0 && storage.constructor === Object) {
+        if (Object.keys(storage).length <= 1 && storage.constructor === Object) {
           storage = app.Utils.default_storge();
         }
         _calculate_counters(elem, href)
