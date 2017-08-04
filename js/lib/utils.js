@@ -3,7 +3,7 @@ window.app = window.app || {};
 app.Utils = (function() {
   'use strict';
 
-  const VERSION = '1.6.3';
+  const VERSION = '1.7.0';
 
   function _is_supported_link_link(node) {
     return /(http\:\/\/|https\:\/\/)[A-Z,a-z,0-9._]*(askubuntu|serverfault|superuser|stackexchange|stackoverflow).com\/questions\/[0-9]+\/.+/.test(node.href);
@@ -29,9 +29,12 @@ app.Utils = (function() {
     var answers = document.getElementById('answers').checked;
     var possible_answers = document.getElementById('possible_answers').checked;
     app.TRACKER.event('event', 'possible_answers', possible_answers + '', 'change')
+    var question = document.getElementById('question').checked;
+    app.TRACKER.event('event', 'question', question + '', 'change')
     chrome.storage.sync.set({
       'answer_color': color,
       'answers': answers,
+      'question': question,
       'possible_answers': possible_answers
     }, function() {
       // Update status to let user know options were saved.
@@ -50,10 +53,12 @@ app.Utils = (function() {
     chrome.storage.sync.get({
       'answer_color': '#ff966b',
       'answers': true,
+      'question': false,
       'possible_answers': true
     }, function(items) {
       document.getElementById('answer_color').value = items.answer_color;
       document.getElementById('answers').checked = items.answers;
+      document.getElementById('question').checked = items.question;
       document.getElementById('possible_answers').checked = items.possible_answers;
     });
   }
@@ -62,6 +67,7 @@ app.Utils = (function() {
     app.TRACKER.event(app.TRACKER.RESET_OPTIONS)
     document.getElementById('answer_color').value = '#ff966b';
     document.getElementById('answers').checked = true;
+    document.getElementById('question').checked = false;
     document.getElementById('possible_answers').checked = true;
     _save_options();
   }
@@ -72,6 +78,21 @@ app.Utils = (function() {
 
     save_options: function() {
       return _save_options();
+    },
+
+    login_success: function() {
+      $('#register').hide()
+      $('#login_success').show()
+      $('#logout').show()
+      $('#get_features').hide()
+    },
+
+    logout_success: function() {
+      $('#logout').hide()
+      $('#register').show()
+      $('#login_success').hide()
+      $('#get_features').show()
+
     },
 
     reset_options: function() {
@@ -86,6 +107,7 @@ app.Utils = (function() {
       return {
         'answer_color': '#ff966b',
         'answers': true,
+        'question': false,
         'possible_answers': true
       }
     },

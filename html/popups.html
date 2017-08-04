@@ -12,7 +12,7 @@
                     <h3 style="font-size: 18px"><img src='../icon_ex.png'/ width="30px" height="30px"> Stack Search</h1>
                 </div>
             </div>
-            <div class="row" style="margin-top: -7%;padding-bottom: 3%;">
+            <div id='get_features' class="row" style="margin-top: -7%;padding-bottom: 3%;">
                 <div class="col-lg-12 text-center">
                     <h3 style="font-size: 14px">Get more features</h3>
                 </div>
@@ -20,6 +20,7 @@
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <button class="btn btn-default btn_an" name="register" id="register">Login with <img src="../img/se_logo.png" width="50%" /></button>
+                    <h4 id='login_success' name='login_success' style='display: none'>You are connected :) Yay!</h4>
                 </div>
             </div>
             <div class="row">
@@ -29,6 +30,11 @@
             </div>
             <div class="row">
                 <div class="col-lg-12">
+                    <label style="font-weight: normal;">
+                        <input class="options" type="checkbox" id="question">
+                        Show Questions
+                    </label>
+                    <br>
                     <label style="font-weight: normal;">
                         <input class="options" type="checkbox" id="answers" checked>
                         Show # of Answers and Score
@@ -43,6 +49,7 @@
                     <br>
                     <div id="status"></div>
                     <button class="btn btn-default btn_an" name="=open_options" id="open_options">More Options</button>
+                    <button  class="btn btn-default btn_an" name="logout" id="logout" style="display: none;font-size: 14px"><span>Logout</span></button>
                 </div>
                 
                 <div style="padding-top:25px"></div>

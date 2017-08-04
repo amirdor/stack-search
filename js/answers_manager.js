@@ -11,6 +11,7 @@ app.ANSWERS = (function() {
   const next_span = '<span style="cursor: pointer;" id="next"> ▶</span>';
   const prev_span = '<span style="cursor: pointer;" id="prev">◀ </span>';
   var storage = {}
+  var f = true;
 
   function _calculate_counters(elem, href) {
     $.ajax({
@@ -39,6 +40,8 @@ app.ANSWERS = (function() {
 
   function _inject_text(elem, htmlElem, site) {
     try {
+      var question_title = htmlElem.find('h1 a.question-hyperlink')[0].innerText;
+      var question = htmlElem.find('div.question .postcell .post-text')[0];
       var answers = htmlElem.find('div.answer')
       var answers_count = answers.size();
       var accpeted_answer = htmlElem.find('div.accepted-answer').size();
@@ -53,7 +56,7 @@ app.ANSWERS = (function() {
         }
       }
       if (max_answer) {
-        _possible_answer(elem, max_answer, max_score, site)
+        _possible_answer(elem, max_answer, max_score, site, question_title, question)
       }
       if (storage['answers']) {
         _create_answers_score(elem, answers_count, accpeted_answer, max_score);
@@ -101,7 +104,7 @@ app.ANSWERS = (function() {
     div.append(div_top);
   }
 
-  function _possible_answer(elem, max_answer, max_score, site) {
+  function _possible_answer(elem, max_answer, max_score, site, question_title, question) {
     try {
       if (!max_answer) {
         return;
@@ -116,10 +119,12 @@ app.ANSWERS = (function() {
       voting_info['voteup'] = max_answer.getElementsByClassName('vote-up-on').length > 0;
       voting_info['votedown'] = max_answer.getElementsByClassName('vote-down-on').length > 0;
       var answer_div = _create_answer_div(max_answer);
+      var question_div = _create_question_div(question_title, question)
       _instert_comments(comment_answer, answer_div);
       // adding source link
       var source_div = _source_link(elem, share_link_data, max_score, site, voting_info)
       var main_div = document.createElement('div');
+      main_div.append(question_div)
       main_div.append(answer_div);
       main_div.append(source_div);
       main_div.className = "main_div"
@@ -132,6 +137,8 @@ app.ANSWERS = (function() {
 
   function _create_answer_div(max_answer) {
     var answer_div = document.createElement("div");
+    var answer_title_div = document.createElement("div");
+    answer_title_div.innerHTML = '<h3 style="font-weight: bold;">Answer</h3>';
     answer_div.className += " xpdopen";
     answer_div.setAttribute("style", "word-wrap: break-word;padding-top: 20px;padding-left: 20px;padding-right: 20px;border-top: solid 1px #ebebeb;margin-top: 15px;")
     max_answer = max_answer.getElementsByTagName('tr')[0];
@@ -142,8 +149,29 @@ app.ANSWERS = (function() {
     for (var i = 0; i < imgs.length; i++) {
       imgs[i].style.width = '100%';
     }
+    if (storage['question']) {
+      answer_div.append(answer_title_div);
+    }
     answer_div.append(answer_clean);
     return answer_div;
+  }
+
+  function _create_question_div(question_title, question) {
+    var question_title_div = document.createElement("div");
+    question_title_div.innerHTML = '<h3 style="font-weight: bold;">' + question_title + '</h3>';
+    var question_div = document.createElement("div");
+    question_div.className += " xpdopen";
+    question_div.setAttribute("style", "word-wrap: break-word;padding-top: 20px;padding-left: 20px;padding-right: 20px;border-top: solid 1px #ebebeb;margin-top: 15px;")
+    var question_clean = question;
+    var imgs = question_clean.getElementsByTagName('img');
+    for (var i = 0; i < imgs.length; i++) {
+      imgs[i].style.width = '100%';
+    }
+    question_div.append(question_title_div);
+    if (storage['question']) {
+      question_div.append(question_clean);
+    }
+    return question_div;
   }
 
   function _source_link(elem, share_link_data, max_score, site, voting_info) {
@@ -325,19 +353,27 @@ app.ANSWERS = (function() {
         prev_link.addEventListener('click', function() {
           _clicked(false)
         });
-        $(document).keydown(function(e) {
-            switch(e.which) {
+        if (f) {
+          $(document).keydown(function(e) {
+            switch (e.which) {
               case 39: // left
-              _clicked(true)
-              break;
-
+                if (document.activeElement.id == "lst-ib") {
+                  return
+                }
+                _clicked(true)
+                break;
               case 37: // right
-               _clicked(false)
-               break;
-            default: return; // exit this handler for other keys
-          }
-            e.preventDefault(); // prevent the default action (scroll / move caret)
+                if (document.activeElement.id == "lst-ib") {
+                  return
+                }
+                _clicked(false)
+                break;
+              default:
+                return; // exit this handler for other keys
+            }
           });
+          f = false
+        }
 
       }
       _render_votes();

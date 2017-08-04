@@ -154,6 +154,7 @@ StackExchangeWrapper.auth.requestToken = function() {
 StackExchangeWrapper.auth.deactivate = function() {
   var user_token = StackExchangeWrapper.auth.getToken();
   if (!user_token || user_token == '') {
+    app.Utils.logout_success();
     return
   }
   var url = 'https://api.stackexchange.com/2.2/apps/' + user_token + '/de-authenticate';
@@ -165,6 +166,8 @@ StackExchangeWrapper.auth.deactivate = function() {
       StackExchangeWrapper.auth.setToken()
       app.TRACKER.event(app.TRACKER.EVENT.DEACTIVATE)
       $('#message_option').text("We are sorry to see you go :(")
+      app.Utils.logout_success();
+
     },
     error: function(xhr) {
       //Do Something to handle error
@@ -201,6 +204,7 @@ StackExchangeWrapper.auth.setToken = function setToken(token) {
       'se_auth_token': token
     });
     window.token = token;
+    app.Utils.login_success();
   } else {
     chrome.storage.sync.set({
       'se_auth_token': ''

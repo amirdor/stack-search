@@ -6,6 +6,7 @@ window.addEventListener('load', _onLoad);
 function trackButton(e) {
   app.TRACKER.event('event', e.id, 'popup', 'clicked');
 };
+StackExchangeWrapper.auth.getToken()
 
 function _onLoad() {
   app.TRACKER.page('popups.html');
@@ -13,6 +14,14 @@ function _onLoad() {
     trackButton($(this)[0])
   });
   app.Utils.restore_options();
+  chrome.storage.sync.get(null, function(items) {
+    if (items['se_auth_token'] && items['se_auth_token'] != '') {
+      app.Utils.login_success();
+    } else {
+      app.Utils.logout_success();
+    }
+  });
+
 }
 classname = document.getElementsByClassName("options")
 for (var i = 0; i < classname.length; i++) {
@@ -27,4 +36,7 @@ document.getElementById('open_options').addEventListener('click', function() {
 
 document.getElementById('register').addEventListener('click', function() {
   StackExchangeWrapper.auth.requestToken();
+})
+document.getElementById('logout').addEventListener('click', function() {
+  StackExchangeWrapper.auth.deactivate();
 })

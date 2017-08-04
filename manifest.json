@@ -1,7 +1,7 @@
 {
   "name": "Stack Search",
   "description": "Stack Search adds to your Google Search results answers from: StackOverflow and StackExchange sites.",
-  "version": "1.6.3",
+  "version": "1.7.0",
   "short_name": "Stack Search",
   "content_security_policy": "script-src 'self' https://www.google-analytics.com/; object-src 'self'",
   "minimum_chrome_version": "40",

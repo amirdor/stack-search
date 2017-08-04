@@ -8,4 +8,3 @@ chrome.runtime.sendMessage({
   auth_token: token && token[1],
   account_id: account_id
 });
-w
