@@ -6,6 +6,7 @@ const config = {
   childList: true,
   subtree: true
 };
+f = true
 const regex = /<a.*?>[^<]*<\/a>/;
 app.TRACKER.page('background.js');
 /* MutationObserver configuration data: Listen for "childList"
@@ -21,6 +22,14 @@ function modifyLinks(rootNode) {
       if (app.Utils.valid_link(node)) {
         href = node.href.replace('http://', 'https://');
         g_stack_link_count += 1;
+        if (f) {
+          var elem = document.createElement('div')
+          elem.className = "_loader_";
+          elem.id = 'typingLoad';
+          elem.innerHTML = "<div></div>"
+          $('#rhs').append(elem)
+          f = false
+        }
         app.ANSWERS.show_answers(node, href);
       }
     } else {
