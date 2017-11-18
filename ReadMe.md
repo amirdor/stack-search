@@ -10,15 +10,14 @@ A quick install will change the way you search for coding help forever! It doesn
 
 I hope you enjoy it and please, share it and leave comments for further improvements!
 
-What's new in version 1.7.0
-1. show question title
-2. show question - set the option to be on
-3. fix foucs on keys
+What's new in version 1.7.1
+1. loader until the answers is shown
+2. fix css on google image
 
 Stack Search was created by [Dor Amir](mailto:amirdor@gmail.com)
 
 ### Version
-1.7.0
+1.7.1
 
 ### Installation
 Via Chrome browser, click on the link below

@@ -385,6 +385,7 @@ app.ANSWERS = (function() {
 
       // create donate and feedback links in the bottom of possible answer block
       _doante();
+      $('#typingLoad').hide();
     } catch (error) {
       app.TRACKER.event('event', 'error', '_inject_answer', error.message)
     }
