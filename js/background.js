@@ -6,7 +6,7 @@ const config = {
   childList: true,
   subtree: true
 };
-const regex = /<a.*?data-href.*>[^<]*<\/a>/;
+const regex = /<a.*?onmousedown="return.*?>[^<]*<\/a>/;
 app.TRACKER.page('background.js');
 /* MutationObserver configuration data: Listen for "childList"
 /* Traverse 'rootNode' and its descendants and modify '<a>' tags */
