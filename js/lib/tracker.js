@@ -87,6 +87,7 @@ app.TRACKER = (function() {
     },
 
     event: function(event, category = null, label = null, action = null) {
+      try{
       if (event) {
         if (label != null) {
           var ev = {}
@@ -99,6 +100,10 @@ app.TRACKER = (function() {
         ev.eventCategory = category ? category.replaceAll(' ', '+') : ev.eventCategory;
         ga('send', ev);
       }
+    }
+    catch(err) {
+      console.log(err)
+    }
     },
 
   };

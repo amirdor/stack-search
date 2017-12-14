@@ -10,13 +10,13 @@ A quick install will change the way you search for coding help forever! It doesn
 
 I hope you enjoy it and please, share it and leave comments for further improvements!
 
-What's new in version 1.7.2
-1. fix issue with regex
+What's new in version 1.8.0
+new visualization to the carousel
 
 Stack Search was created by [Dor Amir](mailto:amirdor@gmail.com)
 
 ### Version
-1.7.2
+1.8.0
 
 ### Installation
 Via Chrome browser, click on the link below

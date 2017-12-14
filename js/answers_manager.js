@@ -4,12 +4,12 @@ app.ANSWERS = (function() {
   'use strict';
 
   const STACK_COLOR = '#ff966b';
-  const POSSIBLE_ANSWERS = 'Possible Answers';
-  const POSSIBLE_ANSWER = 'Possible Answer';
+  const POSSIBLE_ANSWERS = '';
+  const POSSIBLE_ANSWER = '';
   const VIEW_SOURCE = 'View Answer';
   const COMMENTS = "<h4>Comments:<h4>";
-  const next_span = '<span style="cursor: pointer;" id="next"> ▶</span>';
-  const prev_span = '<span style="cursor: pointer;" id="prev">◀ </span>';
+  const next_span = '<span style="cursor: pointer; font-size:13px;" id="next">Next Question</span>';
+  const prev_span = '<span style="cursor: pointer; font-size:13px;" id="prev">Prev Question</span>';
   var storage = {}
   var f = true;
 
@@ -69,16 +69,17 @@ app.ANSWERS = (function() {
   }
 
   function _title() {
-    var title_div = document.createElement("div");
-    title_div.className = "kno-ecr-pt kno-fb-ctx"
-    title_div.setAttribute("style", "padding-left: 20px;padding-right: 20px;");
-    title_div.innerHTML = POSSIBLE_ANSWER;
-    if (answers_div.length > 1) {
-      var max_size_answers = answers_div.length
-      var pages = ' <span id="pages"><span id="c_page">1</span> / ' + max_size_answers + '</span>'
-      title_div.innerHTML = prev_span + POSSIBLE_ANSWERS + pages + next_span
+    if (answers_div.length <= 1) {
+      $('#rhs_block').remove()
+      return
     }
+    var title_div = document.createElement("div");
+    title_div.className = "kno-fb-ctx"
+    var max_size_answers = answers_div.length
+    var pages = ' <span id="pages" style="font-size:15px;padding-bottom: 15px;"><span id="c_page">1</span> / ' + max_size_answers + '</span>'
+    title_div.innerHTML = "<div class='row'><div class='col-lg-3 text-center'>" + prev_span + "</div><div class='col-lg-3 text-center'>" + POSSIBLE_ANSWER + pages +"</div><div class='col-lg-3 text-right'>"+ next_span + "</div></div>"
     $('#rhs').append(title_div);
+    
   }
 
   function _create_answers_score(elem, answers_count, accpeted_answer, max_score) {
@@ -119,7 +120,8 @@ app.ANSWERS = (function() {
       voting_info['voteup'] = max_answer.getElementsByClassName('vote-up-on').length > 0;
       voting_info['votedown'] = max_answer.getElementsByClassName('vote-down-on').length > 0;
       var answer_div = _create_answer_div(max_answer);
-      var question_div = _create_question_div(question_title, question)
+      var link_2_answer = _create_link_to_answer(elem, share_link_data)
+      var question_div = _create_question_div(question_title, question, link_2_answer)
       _instert_comments(comment_answer, answer_div);
       // adding source link
       var source_div = _source_link(elem, share_link_data, max_score, site, voting_info)
@@ -156,12 +158,16 @@ app.ANSWERS = (function() {
     return answer_div;
   }
 
-  function _create_question_div(question_title, question) {
+  function _create_question_div(question_title, question, link_2_answer) {
     var question_title_div = document.createElement("div");
-    question_title_div.innerHTML = '<h3 style="font-weight: bold;">' + question_title + '</h3>';
+    question_title_div.innerHTML = '<h3 style="font-weight: bold;">Q: <a id="stack_link_title" href="' + link_2_answer + '">' + question_title + '</a></h3>';
     var question_div = document.createElement("div");
     question_div.className += " xpdopen";
-    question_div.setAttribute("style", "word-wrap: break-word;padding-top: 20px;padding-left: 20px;padding-right: 20px;border-top: solid 1px #ebebeb;margin-top: 15px;")
+    var style_for_question_div = "word-wrap: break-word;padding-left: 20px;padding-right: 20px;margin-top: 15px;"
+    if (answers_div.length > 1) {
+      style_for_question_div = style_for_question_div + "padding-top: 20px border-top: solid 1px #ebebeb;"
+    }
+    question_div.setAttribute("style", style_for_question_div) 
     var question_clean = question;
     var imgs = question_clean.getElementsByTagName('img');
     for (var i = 0; i < imgs.length; i++) {
@@ -172,6 +178,10 @@ app.ANSWERS = (function() {
       question_div.append(question_clean);
     }
     return question_div;
+  }
+
+  function _create_link_to_answer(elem, share_link_data){
+    return elem.href + "#" + share_link_data
   }
 
   function _source_link(elem, share_link_data, max_score, site, voting_info) {
@@ -307,7 +317,7 @@ app.ANSWERS = (function() {
 
       var left_col = document.createElement('div');
       left_col.className = "col-lg-6";
-      left_col.innerHTML = "<p class='donate_a' dir='auto'>Love this extension? <a id='donate_' class='donate_a b_b_click' target='_blank' href='https://www.paypal.me/doramir/10'>Consider donating!</a><p>"
+      left_col.innerHTML = "<p class='donate_a' dir='auto'>Love this extension? <a id='donate_' class='donate_a b_b_click' target='_blank' href='https://www.paypal.me/doramir/25'>Consider donating!</a><p>"
 
       var right_col = document.createElement('div');
       right_col.className = "col-lg-4 pull-right";
@@ -387,6 +397,7 @@ app.ANSWERS = (function() {
       _doante();
       $('#typingLoad').hide();
     } catch (error) {
+      $('#typingLoad').hide();
       app.TRACKER.event('event', 'error', '_inject_answer', error.message)
     }
   }

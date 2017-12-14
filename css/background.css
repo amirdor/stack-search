@@ -53,3 +53,7 @@
     right: 0;
     margin: auto;
 }
+#stack_link_title{
+	color: #504f4f;
+  text-decoration: underline;
+}
