@@ -1,70 +1,73 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Stack Search</title>
-        <link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
-        <link rel="stylesheet" type="text/css" href="../css/custom.css">
-    </head>
-    <body>
-        <div class="container" >
-            <div class="row">
-                <div class="col-lg-12 text-center page-header">
-                    <h3 style="font-size: 18px"><img src='../icon_ex.png'/ width="30px" height="30px"> Stack Search</h1>
-                </div>
+
+<head>
+    <title>Stack Search</title>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../css/custom.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center page-header">
+                <h3 style="font-size: 18px"><img src='../icon_ex.png' / width="30px" height="30px"> Stack Search</h1>
             </div>
-            <div id='get_features' class="row" style="margin-top: -7%;padding-bottom: 3%;">
-                <div class="col-lg-12 text-center">
-                    <h3 style="font-size: 14px">Get more features</h3>
-                </div>
+        </div>
+        <div id='get_features' class="row" style="margin-top: -7%;padding-bottom: 3%;">
+            <div class="col-lg-12 text-center">
+                <h3 style="font-size: 14px">Get more features</h3>
             </div>
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <button class="btn btn-default btn_an" name="register" id="register">Login with <img src="../img/se_logo.png" width="50%" /></button>
-                    <h4 id='login_success' name='login_success' style='display: none'>You are connected :) Yay!</h4>
-                </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <button class="btn btn-default btn_an" name="register" id="register">Login with <img src="../img/se_logo.png" width="50%" /></button>
+                <h4 id='login_success' name='login_success' style='display: none'>You are connected :) Yay!</h4>
             </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <h3 style="font-size: 14px">Set Options:</h3>
-                </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <h3 style="font-size: 14px">Set Options:</h3>
             </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <label style="font-weight: normal;">
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <label style="font-weight: normal;">
                         <input class="options" type="checkbox" id="question">
                         Show Questions
                     </label>
-                    <br>
-                    <label style="font-weight: normal;">
-                        <input class="options" type="checkbox" id="answers" checked>
+                <br>
+                <label style="font-weight: normal;">
+                        <input class="options" type="checkbox" id="answers">
                         Show # of Answers and Score
                     </label>
-                    <br>
-                    <input type="color" value='#ff966b' style="display: hidden" name="answer_color" id='answer_color' hidden>
-                    <label style="font-weight: normal;">
+                <br>
+                <input type="color" value='#353535' style="display: hidden" name="answer_color" id='answer_color' hidden>
+                <label style="font-weight: normal;">
                         <input class="options" type="checkbox" id="possible_answers" checked>
                         Show Possible Answers
                     </label>
-                    <br>
-                    <br>
-                    <div id="status"></div>
-                    <button class="btn btn-default btn_an" name="=open_options" id="open_options">More Options</button>
-                    <button  class="btn btn-default btn_an" name="logout" id="logout" style="display: none;font-size: 14px"><span>Logout</span></button>
-                </div>
-                
-                <div style="padding-top:25px"></div>
-                <div class="row">
-                    <div class="col-lg-12 text-center">
-                        <p>Found a bug? <a id="bug" class="btn_an" href="https://github.com/DCookieMonster/stack-search/issues" target="_blank">Report it!</a>  |  Love this app?  <a id="donate" href='https://www.paypal.me/doramir/25' class="btn_an" target="_blank">Donate!</a> </p>
-                    </div>
+                <br>
+                <br>
+                <div id="status"></div>
+                <button class="btn btn-default btn_an" name="=open_options" id="open_options">More Options</button>
+                <button class="btn btn-default btn_an" name="logout" id="logout" style="display: none;font-size: 14px"><span>Logout</span></button>
+            </div>
+
+            <div style="padding-top:25px"></div>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <p>Found a bug? <a id="bug" class="btn_an" href="https://github.com/DCookieMonster/stack-search/issues" target="_blank">Report it!</a> | Love this app? <a id="donate" href='https://www.paypal.me/doramir/25' class="btn_an" target="_blank">Donate!</a>                        </p>
                 </div>
             </div>
-            <script src="../js/lib/jquery.js"></script>
-            <script src="../js/lib/stack_exchnage.js"></script>
-            <script src="../js/lib/stack-exchange-wrapper.js"></script>
-            <script src='../js/lib/analytics.js'></script>
-            <script src='../js/lib/utils.js'></script>
-            <script src='../js/lib/tracker.js'></script>
-            <script src='../js/popup.js'></script>
-        </body>
-    </html>
+        </div>
+        <script src="../js/lib/jquery.js"></script>
+        <script src="../js/lib/stack_exchnage.js"></script>
+        <script src="../js/lib/stack-exchange-wrapper.js"></script>
+        <script src='../js/lib/analytics.js'></script>
+        <script src='../js/lib/utils.js'></script>
+        <script src='../js/lib/tracker.js'></script>
+        <script src='../js/popup.js'></script>
+</body>
+
+</html>

@@ -3,7 +3,7 @@ window.app = window.app || {};
 app.Utils = (function() {
     'use strict';
 
-    const VERSION = '1.8.0';
+    const VERSION = "1.9.0";
 
     function _is_supported_link_link(node) {
         return /(http\:\/\/|https\:\/\/)[A-Z,a-z,0-9._]*(askubuntu|serverfault|superuser|stackexchange|stackoverflow).com\/questions\/[0-9]+\/.+/.test(node.href);
@@ -51,8 +51,8 @@ app.Utils = (function() {
     // stored in chrome.storage.
     function _restore_options() {
         chrome.storage.sync.get({
-            'answer_color': '#ff966b',
-            'answers': true,
+            'answer_color': '#353535',
+            'answers': false,
             'question': false,
             'possible_answers': true
         }, function(items) {
@@ -65,7 +65,7 @@ app.Utils = (function() {
 
     function _reset_options() {
         app.TRACKER.event(app.TRACKER.RESET_OPTIONS)
-        document.getElementById('answer_color').value = '#ff966b';
+        document.getElementById('answer_color').value = '#353535';
         document.getElementById('answers').checked = true;
         document.getElementById('question').checked = false;
         document.getElementById('possible_answers').checked = true;
@@ -105,8 +105,8 @@ app.Utils = (function() {
 
         default_storge: function() {
             return {
-                'answer_color': '#ff966b',
-                'answers': true,
+                'answer_color': '#353535',
+                'answers': false,
                 'question': false,
                 'possible_answers': true
             }
