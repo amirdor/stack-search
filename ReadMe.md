@@ -10,13 +10,13 @@ A quick install will change the way you search for coding help forever! It doesn
 
 I hope you enjoy it and please, share it and leave comments for further improvements!
 
-What's new in version 1.9.0
-fix regex issue with new google search
+What's new in version 2
+fix issue with change html tags on stackoverflow
 
 Stack Search was created by [Dor Amir](mailto:amirdor@gmail.com)
 
 ### Version
-1.9.0
+2.0.0
 
 ### Installation
 Via Chrome browser, click on the link below

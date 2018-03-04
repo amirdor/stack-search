@@ -143,9 +143,7 @@ app.ANSWERS = (function() {
         answer_title_div.innerHTML = '<h3 style="font-weight: bold;">Answer</h3>';
         answer_div.className += " xpdopen";
         answer_div.setAttribute("style", "word-wrap: break-word;padding-top: 20px;padding-left: 20px;padding-right: 20px;border-top: solid 1px #ebebeb;margin-top: 15px;")
-        max_answer = max_answer.getElementsByTagName('tr')[0];
-        max_answer.getElementsByClassName('votecell')[0].remove();
-        max_answer.getElementsByClassName('fw')[0].remove();
+        max_answer = max_answer.getElementsByClassName('answercell')[0];
         var answer_clean = max_answer.getElementsByClassName('post-text')[0];
         var imgs = answer_clean.getElementsByTagName('img');
         for (var i = 0; i < imgs.length; i++) {
@@ -342,6 +340,7 @@ app.ANSWERS = (function() {
     function _inject_answer() {
         try {
             if (answers_div.length == 0) {
+                $('#typingLoad').hide();
                 return; // fix issue when there is no answer
             }
             $('#rhs')[0].setAttribute("style", "border: solid 1px #ebebeb;min-width: 400px;max-width: 450px;");
