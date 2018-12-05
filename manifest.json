@@ -1,7 +1,7 @@
 {
     "name": "Stack Search",
     "description": "Stack Search adds to your Google Search results answers from: StackOverflow and StackExchange sites.",
-    "version": "2.0.0",
+    "version": "2.1.1",
     "short_name": "Stack Search",
     "content_security_policy": "script-src 'self' https://www.google-analytics.com/; object-src 'self'",
     "minimum_chrome_version": "40",
@@ -20,7 +20,7 @@
         "js": ["js/lib/jquery.js", "js/lib/highlight.min.js", "js/lib/analytics.js", "js/lib/stack_exchnage.js", "js/lib/stack-exchange-wrapper.js", "js/lib/utils.js", "js/lib/tracker.js", "js/answers_manager.js", "js/background.js"],
         "css": ["css/font-awesome.css", "css/bootstrap.css", "css/background.css", "css/default.min.css"],
         "matches": ["*://*/*"],
-        "include_globs": ["*://www.google.*/*", "*://google.*/*", "*.//duckduckgo.*/*", "*.//www.duckduckgo.*/*"]
+        "include_globs": ["*://www.google.*/*", "*://google.*/*"]
     }, {
         "matches": ["https://stackexchange.com/oauth/login_success?robw&*"],
         "run_at": "document_end",

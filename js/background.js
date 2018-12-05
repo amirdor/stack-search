@@ -1,7 +1,7 @@
 window.app = window.app || {};
 answers_div = [];
-g_current_index = 0;
-g_stack_link_count = 0;
+app.g_current_index = 0;
+app.g_stack_link_count = 0;
 const config = {
     childList: true,
     subtree: true
@@ -17,7 +17,7 @@ app.TRACKER.page('background.js');
 /* Traverse 'rootNode' and its descendants and modify '<a>' tags */
 function modifyLinks(rootNode) {
     answers_div = [];
-    g_stack_link_count = 0;
+    app.g_stack_link_count = 0;
     var nodes = [rootNode];
     while (nodes.length > 0) {
         var node = nodes.shift();
@@ -25,7 +25,7 @@ function modifyLinks(rootNode) {
             /* Modify the '<a>' element */
             if (app.Utils.valid_link(node)) {
                 href = node.href.replace('http://', 'https://');
-                g_stack_link_count += 1;
+                app.g_stack_link_count += 1;
                 if (f) {
                     var elem = document.createElement('div')
                     elem.className = "_loader_";
@@ -46,7 +46,7 @@ function modifyLinks(rootNode) {
             });
         }
     }
-    app.TRACKER.event('event', 'stack_links', g_stack_link_count + '', 'stack_links')
+    app.TRACKER.event('event', 'stack_links', app.g_stack_link_count + '', 'stack_links')
 }
 
 /* Observer1: Looks for 'div.search' */

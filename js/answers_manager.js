@@ -22,8 +22,8 @@ app.ANSWERS = (function() {
                 var htmlElem = $($.parseHTML(response));
                 var site = href.split('.')[0].split('//')[1];
                 _inject_text(elem, htmlElem, site);
-                g_stack_link_count -= 1;
-                if (g_stack_link_count == 0) {
+                app.g_stack_link_count -= 1;
+                if (app.g_stack_link_count == 0) {
                     if (storage['possible_answers']) {
                         _inject_answer();
 
@@ -275,21 +275,21 @@ app.ANSWERS = (function() {
         try {
             var max_size_answers = answers_div.length;
             if (next) {
-                g_current_index += 1;
+                app.g_current_index += 1;
                 app.TRACKER.event(app.TRACKER.EVENT.NEXT)
-                if (g_current_index >= max_size_answers) {
-                    g_current_index = 0;
+                if (app.g_current_index >= max_size_answers) {
+                    app.g_current_index = 0;
                 }
             } else {
                 app.TRACKER.event(app.TRACKER.EVENT.PREV)
-                g_current_index -= 1;
-                if (g_current_index < 0) {
-                    g_current_index = max_size_answers - 1;
+                app.g_current_index -= 1;
+                if (app.g_current_index < 0) {
+                    app.g_current_index = max_size_answers - 1;
                 }
             }
 
-            var next_div = answers_div[g_current_index];
-            $('#c_page')[0].innerHTML = g_current_index + 1;
+            var next_div = answers_div[app.g_current_index];
+            $('#c_page')[0].innerHTML = app.g_current_index + 1;
             $('.main_div')[0].remove();
             $('#rhs').append(next_div);
             _render_votes();
