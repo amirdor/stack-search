@@ -48,7 +48,7 @@ app.ANSWERS = (function() {
             var max_score = 0;
             var max_answer = answers[0];
             for (var i = 0; i < answers_count; i++) {
-                var score = answers[i].getElementsByClassName('vote-count-post')[0].innerHTML;
+                var score = answers[i].getElementsByClassName('js-vote-count')[0].innerHTML;
                 var score_i = parseInt(score)
                 if (max_score < score_i) {
                     max_score = score_i;
